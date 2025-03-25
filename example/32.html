@@ -1,0 +1,165 @@
+<script>
+    /**
+   * UTM Generator - English Translation
+   * Version: 1.0.0
+   */
+
+    const UTM_TRANSLATIONS_EN = {
+        // General UI
+        general: {
+            title: "Campaign URL Builder",
+            description: "This tool allows you to easily add campaign parameters to URLs so you can measure Custom Campaigns in Google Analytics.",
+            websiteUrl: "Website URL",
+            generatedUrl: "Generated URL",
+            copy: "Copy",
+            copied: "Copied!",
+            reset: "Reset",
+            confirmClearHistory: "Are you sure you want to clear all history?",
+            noHistoryFound: "No history found",
+            justNow: "just now",
+            timeAgo: "ago",
+            timeMinSingular: "min",
+            timeMinPlural: "mins",
+            timeHourSingular: "hour",
+            timeHourPlural: "hours",
+            timeDaySingular: "day",
+            timeDayPlural: "days",
+            timeWeekSingular: "week",
+            timeWeekPlural: "weeks",
+            timeMonthSingular: "month",
+            timeMonthPlural: "months",
+            timeYearSingular: "year",
+            timeYearPlural: "years",
+            requiredProgress: "Required",
+            optionalProgress: "Optional"
+        },
+
+        // Form sections
+        formSections: {
+            primaryIdentifiers: "Primary Campaign Identifiers",
+            advancedTargeting: "Advanced Targeting"
+        },
+
+        // Form fields
+        formFields: {
+            websiteUrl: {
+                label: "Website URL",
+                placeholder: "https://www.example.com",
+                tooltip: "The full URL of your website (e.g., https://www.example.com)"
+            },
+            urlFormat: {
+                label: "URL Format Options:",
+                auto: "Auto-detect",
+                preserve: "Preserve as entered",
+                https: "Force HTTPS",
+                http: "Force HTTP",
+                tooltip: "Choose how the URL structure should be formatted"
+            },
+            campaignId: {
+                label: "Campaign ID",
+                placeholder: "abc123, q2_campaign",
+                tooltip: "Optional: A unique identifier for your campaign (e.g., abc.123)"
+            },
+            campaignSource: {
+                label: "Campaign Source",
+                placeholder: "google, facebook, newsletter",
+                tooltip: "Required: The source of your traffic (e.g., google, newsletter)"
+            },
+            campaignMedium: {
+                label: "Campaign Medium",
+                placeholder: "cpc, banner, email",
+                tooltip: "Required: The marketing medium (e.g., cpc, banner, email)"
+            },
+            campaignName: {
+                label: "Campaign Name",
+                placeholder: "summer_sale, product_launch",
+                tooltip: "Optional: The name of your campaign (e.g., spring_sale)"
+            },
+            campaignTerm: {
+                label: "Campaign Term",
+                placeholder: "running+shoes, organic+foods",
+                tooltip: "Optional: Keywords for paid search campaigns"
+            },
+            campaignContent: {
+                label: "Campaign Content",
+                placeholder: "logolink, textlink, version_a",
+                tooltip: "Optional: Differentiate similar content or links within the same ad"
+            }
+        },
+
+        // Hints
+        hints: {
+            examples: "Examples:",
+            popular: "Popular:",
+            tips: "Tips:",
+            format: "Format:",
+            forPaidSearch: "For paid search:",
+            forABTesting: "For A/B testing:",
+            recent: "Recent:",
+            websiteUrlHint1: "https://www.yourcompany.com",
+            websiteUrlHint2: "https://www.yourcompany.com/landing-page",
+            campaignIdHint: "Unique identifier for your campaign (e.g., q2_2023, summer23)"
+        },
+
+        // History
+        history: {
+            title: "Recent URLs",
+            clearHistory: "Clear History",
+            clearSession: "Reset Form",
+            apply: "Apply",
+            delete: "Delete",
+            untitled: "Untitled"
+        },
+
+        // Errors
+        errors: {
+            urlRequired: "Please enter a website URL",
+            invalidUrl: "Please enter a valid URL",
+            requiredFieldsMissing: "Please fill in all required fields",
+            generateFirst: "Generate a URL first"
+        },
+
+        // Tour
+        tour: {
+            needHelp: "Need help?",
+            tourQuestion: "Would you like to take a quick tour of the UTM Generator?",
+            declineTour: "No, thanks",
+            startTour: "Yes, show me",
+            startTourButton: "?",
+            steps: {
+                websiteUrl: {
+                    title: "Website URL",
+                    description: "Start by entering the website URL you want to track. This is the destination where users will land."
+                },
+                languageSwitcher: {
+                    title: "Language Selection",
+                    description: "Choose your preferred language. Your selection will be saved for future visits."
+                },
+                campaignSource: {
+                    title: "Campaign Source",
+                    description: "This required field identifies where the traffic is coming from (e.g., google, facebook, newsletter)."
+                },
+                campaignMedium: {
+                    title: "Campaign Medium",
+                    description: "This required field identifies the marketing medium (e.g., cpc, banner, email)."
+                },
+                hints: {
+                    title: "Quick Hints",
+                    description: "Click these buttons to quickly fill in common values for each field."
+                },
+                campaignName: {
+                    title: "Campaign Name",
+                    description: "Optional: The name of your marketing campaign (e.g., spring_sale, product_launch)."
+                },
+                output: {
+                    title: "Generated URL",
+                    description: "Your UTM URL will appear here. Click the Copy button to copy it to your clipboard."
+                },
+                history: {
+                    title: "URL History",
+                    description: "Your previously generated URLs are saved here. You can apply them to the form, copy them, or delete them."
+                }
+            }
+        }
+    }; 
+</script>

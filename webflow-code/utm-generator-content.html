@@ -1,0 +1,187 @@
+<!-- UTM Generator Content for Webflow -->
+<div class="utm_container box-shadow-elevation-1">
+    <!-- Language switcher will be inserted here -->
+    <div class="language-container"></div>
+
+    <h2 data-i18n="general.title">Campaign URL Builder</h2>
+    <p class="description" data-i18n="general.description">This tool allows you to easily add campaign parameters to
+        URLs so you can measure Custom Campaigns in Google Analytics.</p>
+
+    <form id="utmForm" data-utm-form="main" onsubmit="return false;">
+        <div class="progress-container" data-utm-progress>
+            <!-- Progress bars will be inserted here by JavaScript -->
+        </div>
+
+        <div class="form-group">
+            <label for="websiteUrl">
+                <span data-i18n="formFields.websiteUrl.label">Website URL</span> *
+                <span class="tooltip-trigger" data-utm-tooltip="website-url">?</span>
+            </label>
+            <input type="url" id="websiteUrl" required data-i18n-placeholder="formFields.websiteUrl.placeholder"
+                placeholder="https://www.example.com" data-utm-input="website-url">
+            <span class="error-message" data-utm-error="website-url"></span>
+
+            <!-- URL Format Options -->
+            <div class="url-format-options">
+                <span class="format-label" data-i18n="formFields.urlFormat.label">URL Format Options:</span>
+                <div class="format-buttons">
+                    <button type="button" class="format-button active" data-utm-format="auto"
+                        data-i18n="formFields.urlFormat.auto">Auto-detect</button>
+                    <button type="button" class="format-button" data-utm-format="preserve"
+                        data-i18n="formFields.urlFormat.preserve">Preserve as entered</button>
+                    <button type="button" class="format-button" data-utm-format="https"
+                        data-i18n="formFields.urlFormat.https">Force HTTPS</button>
+                    <button type="button" class="format-button" data-utm-format="http"
+                        data-i18n="formFields.urlFormat.http">Force HTTP</button>
+                </div>
+            </div>
+
+            <div class="input-hints">
+                <span class="hint-label" data-i18n="hints.examples">Examples:</span>
+                <div class="hint-buttons">
+                    <button type="button" class="hint-button" data-i18n="hints.websiteUrlHint1"
+                        data-hint-for="website-url">https://www.yourcompany.com</button>
+                    <button type="button" class="hint-button" data-i18n="hints.websiteUrlHint2"
+                        data-hint-for="website-url">https://www.yourcompany.com/landing-page</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grouping primary campaign identifiers -->
+        <div class="form-section">
+            <h3 data-i18n="formSections.primaryIdentifiers">Primary Campaign Identifiers</h3>
+
+            <div class="form-group">
+                <label for="campaignSource">
+                    <span data-i18n="formFields.campaignSource.label">Campaign Source</span> *
+                    <span class="tooltip-trigger" data-utm-tooltip="campaign-source">?</span>
+                </label>
+                <input type="text" id="campaignSource" required
+                    data-i18n-placeholder="formFields.campaignSource.placeholder"
+                    placeholder="google, facebook, newsletter" data-utm-input="campaign-source">
+                <div class="input-hints">
+                    <span class="hint-label" data-i18n="hints.popular">Popular:</span>
+                    <div class="hint-buttons">
+                        <button type="button" class="hint-button" data-hint-for="campaign-source">google</button>
+                        <button type="button" class="hint-button" data-hint-for="campaign-source">facebook</button>
+                        <button type="button" class="hint-button" data-hint-for="campaign-source">instagram</button>
+                        <button type="button" class="hint-button" data-hint-for="campaign-source">linkedin</button>
+                        <button type="button" class="hint-button" data-hint-for="campaign-source">email</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="campaignMedium">
+                    <span data-i18n="formFields.campaignMedium.label">Campaign Medium</span> *
+                    <span class="tooltip-trigger" data-utm-tooltip="campaign-medium">?</span>
+                </label>
+                <input type="text" id="campaignMedium" required
+                    data-i18n-placeholder="formFields.campaignMedium.placeholder" placeholder="cpc, banner, email"
+                    data-utm-input="campaign-medium">
+                <div class="input-hints">
+                    <span class="hint-label" data-i18n="hints.popular">Popular:</span>
+                    <div class="hint-buttons">
+                        <button type="button" class="hint-button" data-hint-for="campaign-medium">cpc</button>
+                        <button type="button" class="hint-button" data-hint-for="campaign-medium">email</button>
+                        <button type="button" class="hint-button" data-hint-for="campaign-medium">social</button>
+                        <button type="button" class="hint-button" data-hint-for="campaign-medium">banner</button>
+                        <button type="button" class="hint-button" data-hint-for="campaign-medium">organic</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="campaignName">
+                    <span data-i18n="formFields.campaignName.label">Campaign Name</span>
+                    <span class="tooltip-trigger" data-utm-tooltip="campaign-name">?</span>
+                </label>
+                <input type="text" id="campaignName" data-i18n-placeholder="formFields.campaignName.placeholder"
+                    placeholder="summer_sale, product_launch" data-utm-input="campaign-name">
+                <div class="input-hints">
+                    <span class="hint-label" data-i18n="hints.tips">Tips:</span>
+                    <div class="hint-buttons">
+                        <button type="button" class="hint-button" data-hint-for="campaign-name">spring_sale</button>
+                        <button type="button" class="hint-button" data-hint-for="campaign-name">product_launch</button>
+                        <button type="button" class="hint-button" data-hint-for="campaign-name">holiday_promo</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="campaignId">
+                    <span data-i18n="formFields.campaignId.label">Campaign ID</span>
+                    <span class="tooltip-trigger" data-utm-tooltip="campaign-id">?</span>
+                </label>
+                <input type="text" id="campaignId" data-i18n-placeholder="formFields.campaignId.placeholder"
+                    placeholder="abc123, q2_campaign" data-utm-input="campaign-id">
+                <div class="input-hints">
+                    <span class="hint-label" data-i18n="hints.format">Format:</span>
+                    <div class="hint-text" data-i18n="hints.campaignIdHint">Unique identifier for your campaign
+                        (e.g., q2_2023, summer23)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grouping advanced targeting options -->
+        <div class="form-section">
+            <h3 data-i18n="formSections.advancedTargeting">Advanced Targeting</h3>
+
+            <div class="form-group">
+                <label for="campaignTerm">
+                    <span data-i18n="formFields.campaignTerm.label">Campaign Term</span>
+                    <span class="tooltip-trigger" data-utm-tooltip="campaign-term">?</span>
+                </label>
+                <input type="text" id="campaignTerm" data-i18n-placeholder="formFields.campaignTerm.placeholder"
+                    placeholder="running+shoes, organic+foods" data-utm-input="campaign-term">
+                <div class="input-hints">
+                    <span class="hint-label" data-i18n="hints.forPaidSearch">For paid search:</span>
+                    <div class="hint-buttons">
+                        <button type="button" class="hint-button" data-hint-for="campaign-term">blue+widgets</button>
+                        <button type="button" class="hint-button" data-hint-for="campaign-term">buy+online</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="campaignContent">
+                    <span data-i18n="formFields.campaignContent.label">Campaign Content</span>
+                    <span class="tooltip-trigger" data-utm-tooltip="campaign-content">?</span>
+                </label>
+                <input type="text" id="campaignContent" data-i18n-placeholder="formFields.campaignContent.placeholder"
+                    placeholder="logolink, textlink, version_a" data-utm-input="campaign-content">
+                <div class="input-hints">
+                    <span class="hint-label" data-i18n="hints.forABTesting">For A/B testing:</span>
+                    <div class="hint-buttons">
+                        <button type="button" class="hint-button" data-hint-for="campaign-content">version_a</button>
+                        <button type="button" class="hint-button" data-hint-for="campaign-content">top_banner</button>
+                        <button type="button" class="hint-button" data-hint-for="campaign-content">image_ad</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="generatedUrl" data-i18n="general.generatedUrl">Generated URL</label>
+            <div class="url-display">
+                <textarea data-utm-output readonly></textarea>
+                <div class="url-buttons">
+                    <button data-utm-action="copy" data-i18n="general.copy">Copy</button>
+                    <button data-utm-action="clear-session" class="secondary-button"
+                        data-i18n="general.reset">Reset</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="history-section">
+        <div class="history-header">
+            <h2 data-i18n="history.title">Recent URLs</h2>
+            <div class="history-controls">
+                <button class="main-button is-danger" data-utm-action="clear-history"
+                    data-i18n="history.clearHistory">Clear History</button>
+            </div>
+        </div>
+        <div id="historyList" class="history-list" data-utm-list="history"></div>
+    </div>
+</div>
