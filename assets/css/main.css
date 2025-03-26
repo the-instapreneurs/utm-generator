@@ -811,6 +811,10 @@ button.is-danger:hover {
   gap: 0.5rem !important;
 }
 
+.driver-overlay {
+  z-index: 100000 !important;
+}
+
 .driver-popover-prev-btn,
 .driver-popover-next-btn,
 .driver-popover-done-btn {
