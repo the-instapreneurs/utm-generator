@@ -5,196 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UTM Generator</title>
-    <!-- Favicon -->
-    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
     <!-- Driver.js dependencies -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@0.9.8/dist/driver.min.css" />
     <!-- Custom styles -->
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/main.min.css" media="print">
-    <style>
-        .tour-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pulse 2s infinite;
-        }
-
-        /* Driver.js override styles */
-        .driver-popover-close-btn {
-            position: absolute !important;
-            top: 5px !important;
-            right: 5px !important;
-            font-size: 24px !important;
-            color: #333 !important;
-            cursor: pointer !important;
-            width: 30px !important;
-            height: 30px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            border-radius: 50% !important;
-            background: #f2f2f2 !important;
-            z-index: 999999 !important;
-        }
-
-        .driver-popover-close-btn:hover {
-            background: #e0e0e0 !important;
-        }
-
-        /* Make driver.js buttons bigger on mobile */
-        @media (max-width: 768px) {
-            .driver-popover-btn {
-                padding: 12px 15px !important;
-                margin: 5px !important;
-                font-size: 16px !important;
-            }
-
-            .driver-popover-close-btn {
-                width: 40px !important;
-                height: 40px !important;
-                font-size: 28px !important;
-            }
-        }
-
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
-            }
-
-            70% {
-                box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
-            }
-        }
-
-        .tour-button:hover {
-            transform: scale(1.1);
-            background-color: #0056b3;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-            animation: none;
-        }
-
-        .tour-button.hidden {
-            display: none !important;
-        }
-
-        .tutorial-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 350px;
-            background-color: white;
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
-            z-index: 10000;
-            border: 1px solid #e0e0e0;
-        }
-
-        .tutorial-modal.hidden {
-            display: none;
-        }
-
-        .tutorial-modal-content {
-            text-align: center;
-        }
-
-        .tutorial-modal h3 {
-            margin: 0 0 16px 0;
-            color: #333;
-            font-size: 20px;
-        }
-
-        .tutorial-modal p {
-            margin: 0 0 20px 0;
-            color: #555;
-            line-height: 1.5;
-        }
-
-        .tutorial-modal-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .tutorial-modal-buttons button {
-            flex: 1;
-            padding: 10px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-
-        .tutorial-modal-buttons .main-button {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .tutorial-modal-buttons .main-button:hover {
-            background-color: #0056b3;
-        }
-
-        .tutorial-modal-buttons .secondary-button {
-            background-color: #f2f2f2;
-            color: #333;
-        }
-
-        .tutorial-modal-buttons .secondary-button:hover {
-            background-color: #e0e0e0;
-        }
-
-        .tour-close-button {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            z-index: 999999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .tour-close-button:hover {
-            transform: scale(1.1);
-            background-color: #bd2130;
-        }
-
-        .tour-close-button.hidden {
-            display: none !important;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/utm-generator.css">
 </head>
 
 <body>
@@ -214,10 +28,9 @@
 
             <div class="form-group">
                 <label for="websiteUrl">
-                    <span data-i18n="formFields.websiteUrl.label">Website URL</span>
+                    <span data-i18n="formFields.websiteUrl.label">Website URL</span> *
                     <span class="tooltip-trigger" data-utm-tooltip="website-url">?</span>
                 </label>
-                <span class="required-mark">*</span>
                 <div class="input-with-button">
                     <input type="url" id="websiteUrl" required data-i18n-placeholder="formFields.websiteUrl.placeholder"
                         placeholder="https://www.example.com" data-utm-input="website-url">
@@ -254,10 +67,9 @@
 
                 <div class="form-group">
                     <label for="campaignSource">
-                        <span data-i18n="formFields.campaignSource.label">Campaign Source</span>
+                        <span data-i18n="formFields.campaignSource.label">Campaign Source</span> *
                         <span class="tooltip-trigger" data-utm-tooltip="campaign-source">?</span>
                     </label>
-                    <span class="required-mark">*</span>
                     <input type="text" id="campaignSource" required
                         data-i18n-placeholder="formFields.campaignSource.placeholder"
                         placeholder="google, facebook, newsletter" data-utm-input="campaign-source">
@@ -275,10 +87,9 @@
 
                 <div class="form-group">
                     <label for="campaignMedium">
-                        <span data-i18n="formFields.campaignMedium.label">Campaign Medium</span>
+                        <span data-i18n="formFields.campaignMedium.label">Campaign Medium</span> *
                         <span class="tooltip-trigger" data-utm-tooltip="campaign-medium">?</span>
                     </label>
-                    <span class="required-mark">*</span>
                     <input type="text" id="campaignMedium" required
                         data-i18n-placeholder="formFields.campaignMedium.placeholder" placeholder="cpc, banner, email"
                         data-utm-input="campaign-medium">
@@ -447,69 +258,23 @@
     </div>
 
     <!-- Tour Button -->
-    <button class="tour-button" id="tourButton" aria-label="Start Tour">?</button>
+    <button class="tour-button hidden" id="tourButton" data-i18n="tour.startTourButton" title="Start Tour">?</button>
 
-    <!-- Tour Close Button (fixed position) -->
-    <button class="tour-close-button hidden" id="tourCloseButton" aria-label="Close Tour">✕</button>
-
-    <div id="tutorial-modal" class="tutorial-modal hidden">
+    <!-- Tutorial Modal -->
+    <div class="tutorial-modal hidden" id="tutorialModal">
         <div class="tutorial-modal-content">
-            <h3>Welcome to UTM Generator!</h3>
-            <p>UTM tags help track where your website traffic comes from. Would you like a guided tour of how to use
-                this tool?</p>
+            <h3 data-i18n="tour.needHelp">Need help?</h3>
+            <p data-i18n="tour.tourQuestion">Would you like to take a quick tour of the UTM Generator?</p>
             <div class="tutorial-modal-buttons">
-                <button class="main-button" id="startTour">Start Tour</button>
-                <button class="secondary-button" id="declineTour">Skip Tour</button>
+                <button id="declineTour" class="secondary-button" data-i18n="tour.declineTour">No, thanks</button>
+                <button id="startTour" class="main-button" data-i18n="tour.startTour">Yes, show me</button>
             </div>
         </div>
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.js.iife.js"></script>
-    <script>
-        // Simple load check
-        window.addEventListener('load', function () {
-            console.log('Page loaded, checking for Driver.js');
-
-            // Check if driver is loaded correctly
-            if (typeof window.driver === 'undefined') {
-                console.error('Driver.js not found, attempting to load again');
-
-                // Load the script dynamically as fallback
-                const script = document.createElement('script');
-                script.src = 'https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.js.iife.js';
-                script.onload = function () {
-                    console.log('Driver.js loaded via fallback');
-
-                    // Initialize the tour when ready
-                    if (typeof window.startTour === 'function') {
-                        // Show/hide modal based on tour completion status
-                        const hasSeenTour = localStorage.getItem('tourCompleted');
-                        if (!hasSeenTour) {
-                            const tutorialModal = document.getElementById('tutorial-modal');
-                            if (tutorialModal) {
-                                tutorialModal.classList.remove('hidden');
-                            }
-                        }
-                    }
-                };
-                document.head.appendChild(script);
-            } else {
-                console.log('Driver.js found in window.driver');
-            }
-
-            // Make the tour button visible
-            const tourButton = document.getElementById('tourButton');
-            if (tourButton) {
-                tourButton.classList.remove('hidden');
-            }
-
-            // For testing: Clear localStorage
-            // localStorage.removeItem('tourCompleted');
-        });
-    </script>
-    <script src="assets/js/tour.js"></script>
-    <script src="assets/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@0.9.8/dist/driver.min.js"></script>
+    <script src="assets/js/utm-generator.js"></script>
 </body>
 
 </html>

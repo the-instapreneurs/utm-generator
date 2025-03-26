@@ -47,6 +47,38 @@ The HTML structure from `example/index.html` should be replicated in your Webflo
 - Make sure to enable CORS on your GitHub pages or hosting service
 - The CSS and JavaScript files are designed to work with the specific HTML structure provided in the example
 
+## Driver.js Integration in Webflow
+
+The UTM Generator includes a guided tour powered by Driver.js. To ensure it works properly in Webflow:
+
+1. Make sure to add the Driver.js script and CSS in the Header section of your Webflow project:
+
+```html
+<!-- Driver.js dependencies -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/driver.js@0.9.8/dist/driver.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/driver.js@0.9.8/dist/driver.min.js"></script>
+```
+
+2. If you're experiencing issues with Driver.js not initializing:
+
+   - Add this code at the end of your custom code, after the UTM Generator script:
+
+   ```html
+   <script>
+     // Ensure dependencies are loaded properly
+     setTimeout(function () {
+       if (window.verifyUtmGeneratorDependencies) {
+         window.verifyUtmGeneratorDependencies();
+       }
+     }, 1500);
+   </script>
+   ```
+
+3. Make sure your HTML includes the tour button and tutorial modal elements as shown in the example HTML file.
+
 ## Features
 
 - URL parameter generation
