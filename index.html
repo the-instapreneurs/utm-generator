@@ -374,8 +374,8 @@
                 <label for="generatedUrl" data-i18n="general.generatedUrl">Generated URL</label>
                 <div class="url-display">
                     <textarea data-utm-output readonly></textarea>
-                    <div class="url-buttons">
-                        <button data-utm-action="copy" class="main-button is-system">
+                    <div class="utm_url-buttons">
+                        <button type="button" data-utm-action="copy" class="main-button is-system is-disabled" disabled>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"
                                 fill="none">
                                 <path
@@ -384,7 +384,8 @@
                             </svg>
                             <div class="text-style-body-2 text-weight-medium">Скопіювати</div>
                         </button>
-                        <button data-utm-action="clear-session" class="main-button is-system">
+                        <button type="button" data-utm-action="clear-session" class="main-button is-system is-disabled"
+                            disabled>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"
                                 fill="none">
                                 <path
@@ -398,11 +399,13 @@
             </div>
         </form>
 
-        <div class="utm_history-section">
-            <div class="utm_history-header">
-                <h2 data-i18n="history.title">Recent URLs</h2>
-                <div class="history-controls">
-                    <button class="main-button is-danger" data-utm-action="clear-history"
+        <div data-utm-container="history" class="utm_history-container">
+            <div class="history-header">
+                <div class="text-style-body-2 text-weight-medium text-color-secondary">Обрано:<span
+                        data-utm-counter="selected" class="text-color-secondary"> 0</span> з <span
+                        data-utm-counter="total" class="text-color-secondary"> 0</span></div>
+                <div class="history-actions">
+                    <button type="button" class="main-button is-danger" data-utm-action="clear-history"
                         data-i18n="history.clearHistory">Clear History</button>
                 </div>
             </div>
@@ -422,7 +425,7 @@
                             <div class="utm_history-item-content-wrap-2">
                                 <div class="utm_meta-info">
                                     <div class="url- text-style-body-2 text-weight-medium"></div>
-                                    <!-- <div class="title-- text-style-body-2 text-weight-medium visually-hidden"></div> -->
+                                    <div class="title-- text-style-body-2 text-weight-medium"></div>
                                 </div>
                                 <div class="utm_params">
                                     <span class="utm-param-- source-- text-style-caption-1 text-color-tertiary"></span>
@@ -434,31 +437,29 @@
                         <div class="utm_history-item-actions">
                             <div class="utm_timestamp" data-full-date=""></div>
                             <div class="utm_history-item-actions-wrap">
-                                <button data-utm-action="apply" class="visually-hidden" data-url="">
+                                <button type="button" data-utm-action="apply" data-url="">
                                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
                                         width="24px" fill="#1f1f1f">
                                         <path d="M704-240 320-624v344h-80v-480h480v80H376l384 384-56 56Z" />
                                     </svg>
                                 </button>
-                                <button data-utm-action="copy" data-url="">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none">
+                                <button type="button" data-utm-action="copy" data-url="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                                        width="24px" fill="#1f1f1f">
                                         <path
-                                            d="M10 18C9.45 18 8.97917 17.8042 8.5875 17.4125C8.19583 17.0208 8 16.55 8 16V4C8 3.45 8.19583 2.97917 8.5875 2.5875C8.97917 2.19583 9.45 2 10 2H19C19.55 2 20.0208 2.19583 20.4125 2.5875C20.8042 2.97917 21 3.45 21 4V16C21 16.55 20.8042 17.0208 20.4125 17.4125C20.0208 17.8042 19.55 18 19 18H10ZM10 16H19V4H10V16ZM6 22C5.45 22 4.97917 21.8042 4.5875 21.4125C4.19583 21.0208 4 20.55 4 20V7C4 6.71667 4.09583 6.47917 4.2875 6.2875C4.47917 6.09583 4.71667 6 5 6C5.28333 6 5.52083 6.09583 5.7125 6.2875C5.90417 6.47917 6 6.71667 6 7V20H16C16.2833 20 16.5208 20.0958 16.7125 20.2875C16.9042 20.4792 17 20.7167 17 21C17 21.2833 16.9042 21.5208 16.7125 21.7125C16.5208 21.9042 16.2833 22 16 22H6Z"
-                                            fill="#0F0F0F" />
+                                            d="M180-81q-24 0-42-18t-18-42v-603h60v603h603v60H180Zm120-120v-60h360v60H300Zm0-120v-60h360v60H300Zm0-120v-60h360v60H300Z" />
                                     </svg>
                                 </button>
-                                <button data-utm-action="delete" class="main-button is-danger" data-url="">
+                                <button type="button" data-utm-action="delete" class="main-button is-danger"
+                                    data-url="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="none">
                                         <path
-                                            d="M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6C4.71667 6 4.47917 5.90417 4.2875 5.7125C4.09583 5.52083 4 5.28333 4 5C4 4.71667 4.09583 4.47917 4.2875 4.2875C4.47917 4.09583 4.71667 4 5 4H9C9 3.71667 9.09583 3.47917 9.2875 3.2875C9.47917 3.09583 9.71667 3 10 3H14C14.2833 3 14.5208 3.09583 14.7125 3.2875C14.9042 3.47917 15 3.71667 15 4H19C19.2833 4 19.5208 4.09583 19.7125 4.2875C19.9042 4.47917 20 4.71667 20 5C20 5.28333 19.9042 5.52083 19.7125 5.7125C19.5208 5.90417 19.2833 6 19 6V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM17 6H7V19H17V6ZM10 17C10.2833 17 10.5208 16.9042 10.7125 16.7125C10.9042 16.5208 11 16.2833 11 16V9C11 8.71667 10.9042 8.47917 10.7125 8.2875C10.5208 8.09583 10.2833 8 10 8C9.71667 8 9.47917 8.09583 9.2875 8.2875C9.09583 8.47917 9 8.71667 9 9V16C9 16.2833 9.09583 16.5208 9.2875 16.7125C9.47917 16.9042 9.71667 17 10 17ZM14 17C14.2833 17 14.5208 16.9042 14.7125 16.7125C14.9042 16.5208 15 16.2833 15 16V9C15 8.71667 14.9042 8.47917 14.7125 8.2875C14.5208 8.09583 14.2833 8 14 8C13.7167 8 13.4792 8.09583 13.2875 8.2875C13.0958 8.47917 13 8.71667 13 9V16C13 16.2833 13.0958 16.5208 13.2875 16.7125C13.4792 16.9042 13.7167 17 14 17Z"
-                                            fill="#E00C00" />
+                                            d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
                                     </svg>
                                 </button>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -468,10 +469,10 @@
                 <div class="table-export-header">
                     <h3 data-i18n="export.title">Export Selected URLs</h3>
                     <div class="table-export-controls">
-                        <button class="secondary-button" data-utm-action="select-all"
-                            data-i18n="export.selectAll">Select All</button>
-                        <button class="main-button" data-utm-action="copy-table" data-i18n="export.copyTable">Copy as
-                            Table</button>
+                        <button type="button" class="secondary-button" data-utm-action="select-all"
+                            data-i18n="export.selectAll" data-deselect-all-text="Зняти вибір з усіх">Обрати всі</button>
+                        <button type="button" class="main-button is-disabled" data-utm-action="copy-table"
+                            data-i18n="export.copyTable" disabled>Copy as Table</button>
                         <a href="#" class="main-button" data-utm-action="create-sheet"
                             data-i18n="export.createSheet">Create Google Sheet</a>
                     </div>
@@ -508,9 +509,9 @@
                 </div>
             </div>
             <div class="export-modal-buttons">
-                <button class="secondary-button" data-utm-action="close-export-modal"
+                <button type="button" class="secondary-button" data-utm-action="close-export-modal"
                     data-i18n="export.modal.cancel">Cancel</button>
-                <button class="main-button" data-utm-action="confirm-export"
+                <button type="button" class="main-button" data-utm-action="confirm-export"
                     data-i18n="export.modal.export">Export</button>
             </div>
         </div>

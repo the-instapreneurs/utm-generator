@@ -21,17 +21,23 @@ const UTM_TRANSLATIONS_UK = {
         noHistoryFound: "Історія відсутня",
         justNow: "щойно",
         timeAgo: "тому",
-        timeMinSingular: "хвилина",
+        timeMinSingular: "хвилину",
+        timeMinDual: "хвилини",
         timeMinPlural: "хвилин",
-        timeHourSingular: "година",
+        timeHourSingular: "годину",
+        timeHourDual: "години",
         timeHourPlural: "годин",
         timeDaySingular: "день",
+        timeDayDual: "дні",
         timeDayPlural: "днів",
         timeWeekSingular: "тиждень",
+        timeWeekDual: "тижні",
         timeWeekPlural: "тижнів",
         timeMonthSingular: "місяць",
+        timeMonthDual: "місяці",
         timeMonthPlural: "місяців",
         timeYearSingular: "рік",
+        timeYearDual: "роки",
         timeYearPlural: "років",
         requiredProgress: "Обов'язкові",
         optionalProgress: "Додаткові",
@@ -698,13 +704,11 @@ const UTM_TRANSLATIONS_PL = {
 const utmLanguageManager = (function () {
     // Available languages
     const languages = {
-        'en': UTM_TRANSLATIONS_EN,
-        'uk': UTM_TRANSLATIONS_UK,
-        'pl': UTM_TRANSLATIONS_PL
+        'uk': UTM_TRANSLATIONS_UK
     };
 
     // Default language
-    let currentLanguage = 'en';
+    let currentLanguage = 'uk';
 
     // List of callbacks to run when language changes
     let languageChangeCallbacks = [];
@@ -760,18 +764,6 @@ const utmLanguageManager = (function () {
             if (result && result[part] !== undefined) {
                 result = result[part];
             } else {
-                // If not found, try to fall back to English
-                if (currentLanguage !== 'en') {
-                    let fallback = languages['en'];
-                    for (const p of parts) {
-                        if (fallback && fallback[p] !== undefined) {
-                            fallback = fallback[p];
-                        } else {
-                            return key; // Not found in fallback either
-                        }
-                    }
-                    return fallback;
-                }
                 return key; // Key not found
             }
         }
@@ -859,6 +851,10 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(`[UTM Generator] ${message}`, data || '');
     }
 
+    // Initialize history on page load
+    debugLog('Initializing history');
+    renderHistory();
+
     // Format timestamp as time ago
     function formatTimeAgo(timestamp) {
         const now = new Date();
@@ -870,39 +866,79 @@ document.addEventListener('DOMContentLoaded', function () {
         const weeks = Math.floor(days / 7);
         const months = Math.floor(days / 30);
 
+        // Helper function to get the last digit of a number
+        const getLastDigit = (num) => num % 10;
+        // Helper function to get the last two digits of a number
+        const getLastTwoDigits = (num) => num % 100;
+
+        // Helper function to get the correct plural form for Ukrainian
+        const getUkrainianPlural = (num, forms) => {
+            const lastDigit = getLastDigit(num);
+            const lastTwoDigits = getLastTwoDigits(num);
+
+            // Special case for numbers ending in 11-19
+            if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+                return forms[2]; // plural form
+            }
+
+            // For other numbers, use the last digit
+            switch (lastDigit) {
+                case 1:
+                    return forms[0]; // singular form
+                case 2:
+                case 3:
+                case 4:
+                    return forms[1]; // dual form
+                default:
+                    return forms[2]; // plural form
+            }
+        };
+
         if (seconds < 60) {
-            return utmLanguageManager.translate('general.justNow') || 'just now';
+            return utmLanguageManager.translate('general.justNow') || 'щойно';
         } else if (minutes < 60) {
-            const unit = minutes === 1 ?
-                (utmLanguageManager.translate('general.timeMinSingular') || 'min') :
-                (utmLanguageManager.translate('general.timeMinPlural') || 'mins');
-            return `${minutes} ${unit} ${utmLanguageManager.translate('general.timeAgo') || 'ago'}`;
+            const unit = getUkrainianPlural(minutes, [
+                utmLanguageManager.translate('general.timeMinSingular') || 'хвилину',
+                utmLanguageManager.translate('general.timeMinDual') || 'хвилини',
+                utmLanguageManager.translate('general.timeMinPlural') || 'хвилин'
+            ]);
+            return `${minutes} ${unit} ${utmLanguageManager.translate('general.timeAgo') || 'тому'}`;
         } else if (hours < 24) {
-            const unit = hours === 1 ?
-                (utmLanguageManager.translate('general.timeHourSingular') || 'hour') :
-                (utmLanguageManager.translate('general.timeHourPlural') || 'hours');
-            return `${hours} ${unit} ${utmLanguageManager.translate('general.timeAgo') || 'ago'}`;
+            const unit = getUkrainianPlural(hours, [
+                utmLanguageManager.translate('general.timeHourSingular') || 'годину',
+                utmLanguageManager.translate('general.timeHourDual') || 'години',
+                utmLanguageManager.translate('general.timeHourPlural') || 'годин'
+            ]);
+            return `${hours} ${unit} ${utmLanguageManager.translate('general.timeAgo') || 'тому'}`;
         } else if (days < 7) {
-            const unit = days === 1 ?
-                (utmLanguageManager.translate('general.timeDaySingular') || 'day') :
-                (utmLanguageManager.translate('general.timeDayPlural') || 'days');
-            return `${days} ${unit} ${utmLanguageManager.translate('general.timeAgo') || 'ago'}`;
+            const unit = getUkrainianPlural(days, [
+                utmLanguageManager.translate('general.timeDaySingular') || 'день',
+                utmLanguageManager.translate('general.timeDayDual') || 'дні',
+                utmLanguageManager.translate('general.timeDayPlural') || 'днів'
+            ]);
+            return `${days} ${unit} ${utmLanguageManager.translate('general.timeAgo') || 'тому'}`;
         } else if (weeks < 5) {
-            const unit = weeks === 1 ?
-                (utmLanguageManager.translate('general.timeWeekSingular') || 'week') :
-                (utmLanguageManager.translate('general.timeWeekPlural') || 'weeks');
-            return `${weeks} ${unit} ${utmLanguageManager.translate('general.timeAgo') || 'ago'}`;
+            const unit = getUkrainianPlural(weeks, [
+                utmLanguageManager.translate('general.timeWeekSingular') || 'тиждень',
+                utmLanguageManager.translate('general.timeWeekDual') || 'тижні',
+                utmLanguageManager.translate('general.timeWeekPlural') || 'тижнів'
+            ]);
+            return `${weeks} ${unit} ${utmLanguageManager.translate('general.timeAgo') || 'тому'}`;
         } else if (months < 12) {
-            const unit = months === 1 ?
-                (utmLanguageManager.translate('general.timeMonthSingular') || 'month') :
-                (utmLanguageManager.translate('general.timeMonthPlural') || 'months');
-            return `${months} ${unit} ${utmLanguageManager.translate('general.timeAgo') || 'ago'}`;
+            const unit = getUkrainianPlural(months, [
+                utmLanguageManager.translate('general.timeMonthSingular') || 'місяць',
+                utmLanguageManager.translate('general.timeMonthDual') || 'місяці',
+                utmLanguageManager.translate('general.timeMonthPlural') || 'місяців'
+            ]);
+            return `${months} ${unit} ${utmLanguageManager.translate('general.timeAgo') || 'тому'}`;
         } else {
             const years = Math.floor(days / 365);
-            const unit = years === 1 ?
-                (utmLanguageManager.translate('general.timeYearSingular') || 'year') :
-                (utmLanguageManager.translate('general.timeYearPlural') || 'years');
-            return `${years} ${unit} ${utmLanguageManager.translate('general.timeAgo') || 'ago'}`;
+            const unit = getUkrainianPlural(years, [
+                utmLanguageManager.translate('general.timeYearSingular') || 'рік',
+                utmLanguageManager.translate('general.timeYearDual') || 'роки',
+                utmLanguageManager.translate('general.timeYearPlural') || 'років'
+            ]);
+            return `${years} ${unit} ${utmLanguageManager.translate('general.timeAgo') || 'тому'}`;
         }
     }
 
@@ -1067,7 +1103,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to get history from localStorage
     function getHistory() {
         try {
-            const history = JSON.parse(localStorage.getItem(UTM_CONFIG.history.storageKey) || '[]');
+            const rawHistory = localStorage.getItem(UTM_CONFIG.history.storageKey);
+            debugLog('Raw history from localStorage:', rawHistory);
+            const history = JSON.parse(rawHistory || '[]');
+            debugLog('Parsed history:', history);
             return Array.isArray(history) ? history : [];
         } catch (e) {
             console.error('Error parsing history:', e);
@@ -1077,31 +1116,53 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to save to history
     function saveHistory(url, title) {
-        if (!url) return;
+        if (!url) {
+            debugLog('Attempted to save empty URL to history');
+            return;
+        }
         debugLog('Saving to history', { url, title });
         let history = getHistory(); // Get fresh history from localStorage
-        const newItem = { url, title, timestamp: Date.now() };
 
-        // Remove if URL already exists
-        const existingIndex = history.findIndex(item => item.url === url);
+        // Remove if URL already exists (case-insensitive comparison)
+        const existingIndex = history.findIndex(item =>
+            item.url.toLowerCase() === url.toLowerCase()
+        );
+
         if (existingIndex !== -1) {
+            // Remove the existing item
             history.splice(existingIndex, 1);
+            debugLog('Removed existing duplicate from history', { url });
         }
 
-        // Add to beginning and limit size
+        // Create new item
+        const newItem = {
+            url,
+            title: title || utmLanguageManager.translate('history.untitled'),
+            timestamp: Date.now()
+        };
+
+        // Add to beginning
         history.unshift(newItem);
+
+        // Limit size
         if (history.length > UTM_CONFIG.history.maxItems) {
-            history.pop();
+            history = history.slice(0, UTM_CONFIG.history.maxItems);
+            debugLog('History size limited', { maxItems: UTM_CONFIG.history.maxItems });
         }
 
+        // Save to localStorage
         localStorage.setItem(UTM_CONFIG.history.storageKey, JSON.stringify(history));
-        debugLog('History saved successfully', history);
+        debugLog('History saved successfully', { itemCount: history.length, items: history });
     }
 
     // Function to add to history
     function addToHistory(url, title) {
         saveHistory(url, title);
-        renderHistory();
+        // Only re-render if the item was actually added
+        const history = getHistory();
+        if (history.length > 0 && history[0].url === url) {
+            renderHistory();
+        }
     }
 
     // Function to delete from history
@@ -1110,6 +1171,7 @@ document.addEventListener('DOMContentLoaded', function () {
         history = history.filter(item => item.url !== url);
         localStorage.setItem(UTM_CONFIG.history.storageKey, JSON.stringify(history));
         debugLog('Item deleted from history', { url, remainingItems: history.length });
+        // Re-render history after deletion
         renderHistory();
     }
 
@@ -1176,24 +1238,36 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to render history
     function renderHistory() {
         const historyList = document.querySelector(UTM_CONFIG.history.list);
-        if (!historyList) return;
+        const historyContainer = document.querySelector('[data-utm-container="history"]');
+        if (!historyList || !historyContainer) return;
 
         const history = getHistory();
         debugLog('Rendering history', { itemCount: history.length });
+
+        // Show/hide the history container based on whether there are items
+        historyContainer.style.display = history.length > 0 ? 'flex' : 'none';
 
         // Clear existing items except templates
         const templates = historyList.querySelectorAll('[data-template]');
         const emptyState = historyList.querySelector('.history-item-empty');
         historyList.innerHTML = '';
-        templates.forEach(template => historyList.appendChild(template));
-        if (emptyState) historyList.appendChild(emptyState);
+
+        // Re-add templates and empty state
+        templates.forEach(template => {
+            template.style.display = 'none';
+            historyList.appendChild(template);
+        });
+        if (emptyState) {
+            historyList.appendChild(emptyState);
+        }
 
         if (history.length === 0) {
             const emptyStateElement = historyList.querySelector('.history-item-empty');
             if (emptyStateElement) {
-                emptyStateElement.style.display = 'block';
+                emptyStateElement.style.display = 'flex';
                 emptyStateElement.textContent = utmLanguageManager.translate('general.noHistoryFound');
             }
+            updateSelectedCounter();
             return;
         }
 
@@ -1209,21 +1283,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Create history items
         history.forEach((item, index) => {
-            const timeAgo = formatTimeAgo(item.timestamp);
-            const fullDate = formatFullDate(item.timestamp);
-            const urlObj = new URL(item.url);
-            const params = new URLSearchParams(urlObj.search);
-
             // Clone the template
             const historyItem = template.cloneNode(true);
             historyItem.style.display = 'block';
             historyItem.setAttribute('data-url', encodeURIComponent(item.url));
+            historyItem.removeAttribute('data-template'); // Remove template attribute
 
             // Update checkbox
             const checkbox = historyItem.querySelector('.history-select');
             if (checkbox) {
                 checkbox.id = `history-item-${index}`;
                 checkbox.setAttribute('data-index', index);
+                // Add change event listener to update counter
+                checkbox.addEventListener('change', updateSelectedCounter);
             }
 
             // Update meta info
@@ -1239,25 +1311,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const timestampElement = historyItem.querySelector('.utm_timestamp');
             if (timestampElement) {
-                timestampElement.textContent = timeAgo;
-                timestampElement.setAttribute('data-full-date', fullDate);
+                timestampElement.textContent = formatTimeAgo(item.timestamp);
+                timestampElement.setAttribute('data-full-date', formatFullDate(item.timestamp));
             }
 
             // Update UTM params
             const sourceElement = historyItem.querySelector('.utm-param--.source--');
             if (sourceElement) {
-                sourceElement.textContent = params.get('utm_source') || '';
+                sourceElement.textContent = new URL(item.url).searchParams.get('utm_source') || '';
             }
 
             const mediumElement = historyItem.querySelector('.utm-param--.medium--');
             if (mediumElement) {
-                mediumElement.textContent = params.get('utm_medium') || '';
+                mediumElement.textContent = new URL(item.url).searchParams.get('utm_medium') || '';
             }
 
             const campaignElement = historyItem.querySelector('.utm-param-.campaign-');
             if (campaignElement) {
-                campaignElement.textContent = params.get('utm_campaign') || '';
-                campaignElement.style.display = params.get('utm_campaign') ? 'inline-block' : 'none';
+                const campaignValue = new URL(item.url).searchParams.get('utm_campaign');
+                campaignElement.textContent = campaignValue || '';
+                campaignElement.style.display = campaignValue ? 'inline-block' : 'none';
             }
 
             // Update action buttons
@@ -1279,6 +1352,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // Add to history list
             historyList.appendChild(historyItem);
         });
+
+        // Update counter immediately after rendering all items
+        updateSelectedCounter();
     }
 
     // Function to get selected history items
@@ -1589,37 +1665,31 @@ document.addEventListener('DOMContentLoaded', function () {
         // Source (required)
         if (inputs.campaignSource) {
             params.push(`utm_source=${encodeParameter(inputs.campaignSource)}`);
-            trackUtmParameter(inputs, utmUrl, 'Source', inputs.campaignSource);
         }
 
         // Medium (required)
         if (inputs.campaignMedium) {
             params.push(`utm_medium=${encodeParameter(inputs.campaignMedium)}`);
-            trackUtmParameter(inputs, utmUrl, 'Medium', inputs.campaignMedium);
         }
 
         // Campaign Name (optional)
         if (inputs.campaignName) {
             params.push(`utm_campaign=${encodeParameter(inputs.campaignName)}`);
-            trackUtmParameter(inputs, utmUrl, 'Campaign', inputs.campaignName);
         }
 
         // Campaign ID (optional)
         if (inputs.campaignId) {
             params.push(`utm_id=${encodeParameter(inputs.campaignId)}`);
-            trackUtmParameter(inputs, utmUrl, 'Campaign ID', inputs.campaignId);
         }
 
         // Term (optional)
         if (inputs.campaignTerm) {
             params.push(`utm_term=${encodeParameter(inputs.campaignTerm)}`);
-            trackUtmParameter(inputs, utmUrl, 'Term', inputs.campaignTerm);
         }
 
         // Content (optional)
         if (inputs.campaignContent) {
             params.push(`utm_content=${encodeParameter(inputs.campaignContent)}`);
-            trackUtmParameter(inputs, utmUrl, 'Content', inputs.campaignContent);
         }
 
         // If there are parameters, build the URL
@@ -1697,6 +1767,18 @@ document.addEventListener('DOMContentLoaded', function () {
         if (output) {
             output.value = url;
             adjustTextareaHeight(output);
+
+            // Update URL buttons state
+            const urlButtons = document.querySelectorAll('.utm_url-buttons button');
+            urlButtons.forEach(button => {
+                if (url) {
+                    button.classList.remove('is-disabled');
+                    button.disabled = false;
+                } else {
+                    button.classList.add('is-disabled');
+                    button.disabled = true;
+                }
+            });
         }
     }
 
@@ -1725,39 +1807,93 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
-    // Event delegation for all actions
+    // Function to update selected items counter
+    function updateSelectedCounter() {
+        const selectedCounter = document.querySelector('[data-utm-counter="selected"]');
+        const totalCounter = document.querySelector('[data-utm-counter="total"]');
+        if (!selectedCounter || !totalCounter) return;
+
+        // Get only non-template items
+        const allCheckboxes = Array.from(document.querySelectorAll('.history-select')).filter(cb => !cb.closest('[data-template]'));
+        const selectedCount = allCheckboxes.filter(cb => cb.checked).length;
+        const totalCount = allCheckboxes.length;
+
+        selectedCounter.textContent = ` ${selectedCount}`;
+        totalCounter.textContent = ` ${totalCount}`;
+    }
+
+    // Function to update history selection buttons state
+    function updateHistorySelectionButtons() {
+        const historyItems = document.querySelectorAll('.utm_history-item:not([style*="display: none"])');
+        const selectedItems = document.querySelectorAll('.history-select:checked');
+        const totalItems = historyItems.length;
+        const selectedCount = selectedItems.length;
+
+        // Update counter
+        const selectedCounter = document.querySelector('[data-utm-counter="selected"]');
+        const totalCounter = document.querySelector('[data-utm-counter="total"]');
+        if (selectedCounter) selectedCounter.textContent = ` ${selectedCount}`;
+        if (totalCounter) totalCounter.textContent = ` ${totalItems}`;
+
+        // Update select-all button text
+        const selectAllButton = document.querySelector('[data-utm-action="select-all"]');
+        if (selectAllButton) {
+            if (selectedCount === totalItems && totalItems > 0) {
+                selectAllButton.textContent = selectAllButton.getAttribute('data-deselect-all-text');
+            } else {
+                selectAllButton.textContent = utmLanguageManager.translate('export.selectAll') || 'Select All';
+            }
+        }
+
+        // Update copy-table button state
+        const copyTableButton = document.querySelector('[data-utm-action="copy-table"]');
+        if (copyTableButton) {
+            if (selectedCount > 0) {
+                copyTableButton.classList.remove('is-disabled');
+                copyTableButton.disabled = false;
+            } else {
+                copyTableButton.classList.add('is-disabled');
+                copyTableButton.disabled = true;
+            }
+        }
+    }
+
+    // Remove the duplicate select-all handler and update the main click handler
     document.addEventListener('click', (e) => {
         const action = e.target.closest('[data-utm-action]');
         if (!action) return;
 
         const actionType = action.getAttribute('data-utm-action');
-        const url = action.getAttribute('data-url');
-
-        debugLog('Action clicked', { actionType, url });
+        const url = action.getAttribute('data-url'); // Move url declaration here
 
         switch (actionType) {
             case 'copy':
                 if (url) {
+                    // Copy from history
                     navigator.clipboard.writeText(decodeURIComponent(url))
                         .then(() => {
                             debugLog('URL copied from history', decodeURIComponent(url));
-                            action.textContent = utmLanguageManager.translate('general.copied');
+                            // Store original SVG content
+                            const originalContent = action.innerHTML;
+                            // Change to text
+                            action.innerHTML = utmLanguageManager.translate('general.copied');
+                            // Change back to icon after 2 seconds
                             setTimeout(() => {
-                                action.textContent = utmLanguageManager.translate('general.copy');
+                                action.innerHTML = originalContent;
                             }, 2000);
                         })
                         .catch(err => {
                             debugLog('Error copying URL', err);
                         });
                 } else {
+                    // Copy from output
                     const output = document.querySelector(UTM_CONFIG.form.output);
                     if (output && output.value) {
                         navigator.clipboard.writeText(output.value)
                             .then(() => {
                                 debugLog('Current URL copied', output.value);
-                                const title = document.querySelector(UTM_CONFIG.form.inputs.campaignName)
-                                    .value ||
-                                    document.querySelector(UTM_CONFIG.form.inputs.websiteUrl).value;
+                                const title = document.querySelector(UTM_CONFIG.form.inputs.campaignName)?.value ||
+                                    document.querySelector(UTM_CONFIG.form.inputs.websiteUrl)?.value;
                                 if (output.value) {
                                     addToHistory(output.value, title);
 
@@ -1774,9 +1910,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                     // Track URL copy action
                                     trackUrlCopy(inputs, output.value);
                                 }
-                                action.textContent = utmLanguageManager.translate('general.copied');
+                                // Store original SVG content
+                                const originalContent = action.innerHTML;
+                                // Change to text
+                                action.innerHTML = utmLanguageManager.translate('general.copied');
+                                // Change back to icon after 2 seconds
                                 setTimeout(() => {
-                                    action.textContent = utmLanguageManager.translate('general.copy');
+                                    action.innerHTML = originalContent;
                                 }, 2000);
                             })
                             .catch(err => {
@@ -1789,10 +1929,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (url) {
                     applyUrlToForm(decodeURIComponent(url));
                     debugLog('URL applied to form', url);
+                    // Scroll to top of the page
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
                 break;
             case 'delete':
                 if (url) {
+                    // First delete from storage
                     deleteFromHistory(decodeURIComponent(url));
                     debugLog('URL deleted from history', url);
                 }
@@ -1831,9 +1974,31 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                 break;
             case 'select-all':
-                const checkboxes = document.querySelectorAll('.history-select');
-                const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-                checkboxes.forEach(cb => cb.checked = !allChecked);
+                // Get only non-template items
+                const checkboxes = Array.from(document.querySelectorAll('.history-select')).filter(cb => !cb.closest('[data-template]'));
+                const selectedCount = checkboxes.filter(cb => cb.checked).length;
+                const totalCount = checkboxes.length;
+
+                // If all items are selected, deselect all
+                // If some items are selected, select all
+                // If no items are selected, select all
+                const shouldSelect = selectedCount < totalCount;
+
+                checkboxes.forEach(cb => cb.checked = shouldSelect);
+
+                // Update button text immediately after selection change
+                const selectAllButton = document.querySelector('[data-utm-action="select-all"]');
+                if (selectAllButton) {
+                    if (shouldSelect) {
+                        // When selecting all, show deselect text
+                        selectAllButton.textContent = selectAllButton.getAttribute('data-deselect-all-text');
+                    } else {
+                        // When deselecting all, show select text
+                        selectAllButton.textContent = utmLanguageManager.translate('export.selectAll') || 'Select All';
+                    }
+                }
+
+                updateHistorySelectionButtons();
                 break;
             case 'copy-table':
                 copyTableToClipboard();
@@ -1878,189 +2043,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Update progress bar
-    function updateProgress() {
-        // Count filled fields
-        const requiredFields = ['websiteUrl', 'campaignSource', 'campaignMedium'];
-        const optionalFields = ['campaignId', 'campaignName', 'campaignTerm', 'campaignContent'];
-
-        const filledRequired = requiredFields.filter(field => {
-            const input = document.querySelector(UTM_CONFIG.form.inputs[field]);
-            return input && input.value.trim() !== '';
-        }).length;
-
-        const filledOptional = optionalFields.filter(field => {
-            const input = document.querySelector(UTM_CONFIG.form.inputs[field]);
-            return input && input.value.trim() !== '';
-        }).length;
-
-        debugLog('Progress updated', { filledRequired, filledOptional });
-
-        // Update progress UI
-        const progressContainer = document.querySelector('[data-utm-progress]');
-        if (progressContainer) {
-            const requiredPercentage = (filledRequired / requiredFields.length) * 100;
-            const optionalPercentage = optionalFields.length ? (filledOptional / optionalFields
-                .length) * 100 : 0;
-
-            if (UTM_CONFIG.progress.style === 'circles') {
-                progressContainer.innerHTML = `
-                      <div class="progress-sections">
-                          <div class="progress-section required">
-                              <div class="progress-label">
-                                  <span class="required-label">${utmLanguageManager.translate('general.requiredProgress') || 'Required'}</span>
-                                  ${UTM_CONFIG.progress.showNumbers ? `<span class="progress-numbers">${filledRequired}/${requiredFields.length}</span>` : ''}
-                                  ${UTM_CONFIG.progress.showPercentages ? `<span class="progress-percentage">(${Math.round(requiredPercentage)}%)</span>` : ''}
-    </div>
-                              <div class="progress-circles">
-                                  ${Array(requiredFields.length).fill().map((_, i) =>
-                    `<div class="progress-circle ${i < filledRequired ? 'filled' : ''}"></div>`
-                ).join('')}
-    </div>
-    </div>
-                          <div class="progress-section optional">
-                              <div class="progress-label">
-                                  <span class="optional-label">${utmLanguageManager.translate('general.optionalProgress') || 'Optional'}</span>
-                                  ${UTM_CONFIG.progress.showNumbers ? `<span class="progress-numbers">${filledOptional}/${optionalFields.length}</span>` : ''}
-                                  ${UTM_CONFIG.progress.showPercentages ? `<span class="progress-percentage">(${Math.round(optionalPercentage)}%)</span>` : ''}
-    </div>
-                              <div class="progress-circles">
-                                  ${Array(optionalFields.length).fill().map((_, i) =>
-                    `<div class="progress-circle ${i < filledOptional ? 'filled' : ''}"></div>`
-                ).join('')}
-    </div>
-    </div>
-    </div>
-                  `;
-            } else {
-                // Original bars style
-                progressContainer.innerHTML = `
-                      <div class="progress-label">
-                          <span class="required-label">${utmLanguageManager.translate('general.requiredProgress') || 'Required'}</span>
-                          ${UTM_CONFIG.progress.showNumbers ? `<span class="progress-numbers">${filledRequired}/${requiredFields.length}</span>` : ''}
-                          ${UTM_CONFIG.progress.showPercentages ? `<span class="progress-percentage">(${Math.round(requiredPercentage)}%)</span>` : ''}
-                          <span class="optional-label">${utmLanguageManager.translate('general.optionalProgress') || 'Optional'}</span>
-                          ${UTM_CONFIG.progress.showNumbers ? `<span class="progress-numbers">${filledOptional}/${optionalFields.length}</span>` : ''}
-                          ${UTM_CONFIG.progress.showPercentages ? `<span class="progress-percentage">(${Math.round(optionalPercentage)}%)</span>` : ''}
-    </div>
-                      <div class="progress-bars">
-                          <div class="progress-bar required" style="width: ${requiredPercentage}%"></div>
-                          <div class="progress-bar optional" style="width: ${optionalPercentage}%"></div>
-    </div>
-                  `;
-            }
+    // Add event listener for history checkboxes
+    document.addEventListener('change', function (e) {
+        if (e.target.classList.contains('history-select')) {
+            updateHistorySelectionButtons();
         }
-    }
+    });
 
-    // Function to create and initialize the language switcher
-    function initLanguageSwitcher() {
-        const container = document.querySelector('.language-container');
-        if (!container) return;
-
-        // Clear existing content
-        container.innerHTML = '';
-
-        // Create language switcher
-        const switcher = document.createElement('div');
-        switcher.className = 'language-switcher';
-
-        // Add available languages
-        const languages = [
-            { code: 'en', name: 'English' },
-            { code: 'uk', name: 'Українська' },
-            { code: 'pl', name: 'Polski' }
-        ];
-
-        // Current language
-        const currentLang = utmLanguageManager.getCurrentLanguage();
-
-        languages.forEach(lang => {
-            const button = document.createElement('button');
-            button.className = `language-button ${lang.code === currentLang ? 'active' : ''}`;
-            button.setAttribute('data-language', lang.code);
-            button.textContent = lang.name;
-
-            button.addEventListener('click', () => {
-                if (lang.code !== utmLanguageManager.getCurrentLanguage()) {
-                    // Remove active class from all buttons
-                    switcher.querySelectorAll('.language-button').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-
-                    // Add active class to clicked button
-                    button.classList.add('active');
-
-                    // Change language
-                    utmLanguageManager.changeLanguage(lang.code);
-
-                    // Apply translations to the UI
-                    applyTranslations();
-
-                    // Also update tour translations if tour.js has exposed the function
-                    if (typeof window.updateAllTourTranslations === 'function') {
-                        window.updateAllTourTranslations();
-                    }
-                }
-            });
-
-            switcher.appendChild(button);
-        });
-
-        container.appendChild(switcher);
-    }
-
-    // Function to apply translations to the UI
-    function applyTranslations() {
-        document.querySelectorAll('[data-i18n]').forEach(element => {
-            const key = element.getAttribute('data-i18n');
-            const translation = utmLanguageManager.translate(key);
-
-            if (translation) {
-                if (element.tagName === 'INPUT' && element.type === 'text') {
-                    // For input elements, update placeholder
-                    element.setAttribute('placeholder', translation);
-                } else {
-                    // For other elements, update text content
-                    element.textContent = translation;
-                }
-            }
-        });
-
-        // Also update placeholders for i18n-placeholders
-        document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
-            const key = element.getAttribute('data-i18n-placeholder');
-            const translation = utmLanguageManager.translate(key);
-
-            if (translation && element.tagName === 'INPUT') {
-                element.setAttribute('placeholder', translation);
-            }
-        });
-
-        // Update document title
-        document.title = utmLanguageManager.translate('general.title');
-    }
-
-    // Make sure to add updateAllTourTranslations to the window object
-    window.updateAllTourTranslations = function () {
-        if (typeof window.updateTourTranslations === 'function') {
-            window.updateTourTranslations();
-        }
-    };
-
-    // Initial setup
-    console.log('UTM Generator v1.3.3 initialized');
-
-    // Initialize language switcher
-    initLanguageSwitcher();
-
-    // Apply initial translations
-    applyTranslations();
-
-    // Set up tour integration
-    setupTourIntegration();
-
-    // Add event listener for language changes
-    utmLanguageManager.onLanguageChange(() => {
+    // Remove duplicate language change event listeners
+    window.removeEventListener('utmLanguageChanged', () => { });
+    window.addEventListener('utmLanguageChanged', () => {
         // Update UI translations
         applyTranslations();
 
