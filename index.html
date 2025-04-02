@@ -414,43 +414,51 @@
 
                 <!-- History item template -->
                 <div class="utm_history-item" style="display: none;" data-template="history-item">
-                    <div class="history-item-checkbox">
-                        <input type="checkbox" class="history-select" data-index="">
-                    </div>
                     <div class="utm_history-item-content">
-                        <div class="meta-info">
-                            <div class="url- text-style-body-2 text-weight-medium"></div>
-                            <!-- <div class="title-- text-style-body-2 text-weight-medium visually-hidden"></div> -->
-                            <div class="timestamp" data-full-date=""></div>
+                        <div class="utm_history-item-content-wrap">
+                            <div class="history-item-checkbox">
+                                <input type="checkbox" class="history-select" data-index="">
+                            </div>
+                            <div class="utm_history-item-content-wrap-2">
+                                <div class="utm_meta-info">
+                                    <div class="url- text-style-body-2 text-weight-medium"></div>
+                                    <!-- <div class="title-- text-style-body-2 text-weight-medium visually-hidden"></div> -->
+                                </div>
+                                <div class="utm_params">
+                                    <span class="utm-param-- source-- text-style-caption-1 text-color-tertiary"></span>
+                                    <span class="utm-param-- medium-- text-style-caption-1 text-color-tertiary"></span>
+                                    <span class="utm-param- campaign- text-style-caption-1 text-color-tertiary"></span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="utm-params">
-                            <span class="utm-param-- source-- text-style-caption-1 text-color-tertiary"></span>
-                            <span class="utm-param-- medium-- text-style-caption-1 text-color-tertiary"></span>
-                            <span class="utm-param- campaign- text-style-caption-1 text-color-tertiary"></span>
+                        <div class="utm_history-item-actions">
+                            <div class="utm_timestamp" data-full-date=""></div>
+                            <div class="utm_history-item-actions-wrap">
+                                <button data-utm-action="apply" class="visually-hidden" data-url="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                                        width="24px" fill="#1f1f1f">
+                                        <path d="M704-240 320-624v344h-80v-480h480v80H376l384 384-56 56Z" />
+                                    </svg>
+                                </button>
+                                <button data-utm-action="copy" data-url="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none">
+                                        <path
+                                            d="M10 18C9.45 18 8.97917 17.8042 8.5875 17.4125C8.19583 17.0208 8 16.55 8 16V4C8 3.45 8.19583 2.97917 8.5875 2.5875C8.97917 2.19583 9.45 2 10 2H19C19.55 2 20.0208 2.19583 20.4125 2.5875C20.8042 2.97917 21 3.45 21 4V16C21 16.55 20.8042 17.0208 20.4125 17.4125C20.0208 17.8042 19.55 18 19 18H10ZM10 16H19V4H10V16ZM6 22C5.45 22 4.97917 21.8042 4.5875 21.4125C4.19583 21.0208 4 20.55 4 20V7C4 6.71667 4.09583 6.47917 4.2875 6.2875C4.47917 6.09583 4.71667 6 5 6C5.28333 6 5.52083 6.09583 5.7125 6.2875C5.90417 6.47917 6 6.71667 6 7V20H16C16.2833 20 16.5208 20.0958 16.7125 20.2875C16.9042 20.4792 17 20.7167 17 21C17 21.2833 16.9042 21.5208 16.7125 21.7125C16.5208 21.9042 16.2833 22 16 22H6Z"
+                                            fill="#0F0F0F" />
+                                    </svg>
+                                </button>
+                                <button data-utm-action="delete" class="main-button is-danger" data-url="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none">
+                                        <path
+                                            d="M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6C4.71667 6 4.47917 5.90417 4.2875 5.7125C4.09583 5.52083 4 5.28333 4 5C4 4.71667 4.09583 4.47917 4.2875 4.2875C4.47917 4.09583 4.71667 4 5 4H9C9 3.71667 9.09583 3.47917 9.2875 3.2875C9.47917 3.09583 9.71667 3 10 3H14C14.2833 3 14.5208 3.09583 14.7125 3.2875C14.9042 3.47917 15 3.71667 15 4H19C19.2833 4 19.5208 4.09583 19.7125 4.2875C19.9042 4.47917 20 4.71667 20 5C20 5.28333 19.9042 5.52083 19.7125 5.7125C19.5208 5.90417 19.2833 6 19 6V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM17 6H7V19H17V6ZM10 17C10.2833 17 10.5208 16.9042 10.7125 16.7125C10.9042 16.5208 11 16.2833 11 16V9C11 8.71667 10.9042 8.47917 10.7125 8.2875C10.5208 8.09583 10.2833 8 10 8C9.71667 8 9.47917 8.09583 9.2875 8.2875C9.09583 8.47917 9 8.71667 9 9V16C9 16.2833 9.09583 16.5208 9.2875 16.7125C9.47917 16.9042 9.71667 17 10 17ZM14 17C14.2833 17 14.5208 16.9042 14.7125 16.7125C14.9042 16.5208 15 16.2833 15 16V9C15 8.71667 14.9042 8.47917 14.7125 8.2875C14.5208 8.09583 14.2833 8 14 8C13.7167 8 13.4792 8.09583 13.2875 8.2875C13.0958 8.47917 13 8.71667 13 9V16C13 16.2833 13.0958 16.5208 13.2875 16.7125C13.4792 16.9042 13.7167 17 14 17Z"
+                                            fill="#E00C00" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
-                        <div class="actions">
-                            <button data-utm-action="apply" class="visually-hidden" data-url=""><svg
-                                    xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
-                                    width="24px" fill="#1f1f1f">
-                                    <path d="M704-240 320-624v344h-80v-480h480v80H376l384 384-56 56Z" />
-                                </svg></button>
-                            <button data-utm-action="copy" data-url="">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                    fill="none">
-                                    <path
-                                        d="M10 18C9.45 18 8.97917 17.8042 8.5875 17.4125C8.19583 17.0208 8 16.55 8 16V4C8 3.45 8.19583 2.97917 8.5875 2.5875C8.97917 2.19583 9.45 2 10 2H19C19.55 2 20.0208 2.19583 20.4125 2.5875C20.8042 2.97917 21 3.45 21 4V16C21 16.55 20.8042 17.0208 20.4125 17.4125C20.0208 17.8042 19.55 18 19 18H10ZM10 16H19V4H10V16ZM6 22C5.45 22 4.97917 21.8042 4.5875 21.4125C4.19583 21.0208 4 20.55 4 20V7C4 6.71667 4.09583 6.47917 4.2875 6.2875C4.47917 6.09583 4.71667 6 5 6C5.28333 6 5.52083 6.09583 5.7125 6.2875C5.90417 6.47917 6 6.71667 6 7V20H16C16.2833 20 16.5208 20.0958 16.7125 20.2875C16.9042 20.4792 17 20.7167 17 21C17 21.2833 16.9042 21.5208 16.7125 21.7125C16.5208 21.9042 16.2833 22 16 22H6Z"
-                                        fill="#0F0F0F" />
-                                </svg>
-                            </button>
-                            <button data-utm-action="delete" class="main-button is-danger" data-url="">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                    fill="none">
-                                    <path
-                                        d="M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6C4.71667 6 4.47917 5.90417 4.2875 5.7125C4.09583 5.52083 4 5.28333 4 5C4 4.71667 4.09583 4.47917 4.2875 4.2875C4.47917 4.09583 4.71667 4 5 4H9C9 3.71667 9.09583 3.47917 9.2875 3.2875C9.47917 3.09583 9.71667 3 10 3H14C14.2833 3 14.5208 3.09583 14.7125 3.2875C14.9042 3.47917 15 3.71667 15 4H19C19.2833 4 19.5208 4.09583 19.7125 4.2875C19.9042 4.47917 20 4.71667 20 5C20 5.28333 19.9042 5.52083 19.7125 5.7125C19.5208 5.90417 19.2833 6 19 6V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM17 6H7V19H17V6ZM10 17C10.2833 17 10.5208 16.9042 10.7125 16.7125C10.9042 16.5208 11 16.2833 11 16V9C11 8.71667 10.9042 8.47917 10.7125 8.2875C10.5208 8.09583 10.2833 8 10 8C9.71667 8 9.47917 8.09583 9.2875 8.2875C9.09583 8.47917 9 8.71667 9 9V16C9 16.2833 9.09583 16.5208 9.2875 16.7125C9.47917 16.9042 9.71667 17 10 17ZM14 17C14.2833 17 14.5208 16.9042 14.7125 16.7125C14.9042 16.5208 15 16.2833 15 16V9C15 8.71667 14.9042 8.47917 14.7125 8.2875C14.5208 8.09583 14.2833 8 14 8C13.7167 8 13.4792 8.09583 13.2875 8.2875C13.0958 8.47917 13 8.71667 13 9V16C13 16.2833 13.0958 16.5208 13.2875 16.7125C13.4792 16.9042 13.7167 17 14 17Z"
-                                        fill="#E00C00" />
-                                </svg>
-                            </button>
-                        </div>
+
                     </div>
                 </div>
             </div>

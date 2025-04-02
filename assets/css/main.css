@@ -458,19 +458,25 @@ button.is-danger:hover {
   flex-direction: column;
   border: 1px solid #e5e5e5;
   border-radius: 1rem;
-  overflow: hidden;
 }
 
 .utm_history-item {
   display: flex;
   gap: 1rem;
-  padding: 1rem;
+  padding: 0.75rem;
   background-color: white;
   border-bottom: 1px solid #e5e5e5;
 }
 
+.utm_history-item:nth-child(3) {
+  border-top-right-radius: inherit;
+  border-top-left-radius: inherit;
+}
+
 .utm_history-item:last-child {
   border-bottom: none;
+  border-bottom-right-radius: inherit;
+  border-bottom-left-radius: inherit;
 }
 
 .utm_history-item-checkbox {
@@ -480,6 +486,24 @@ button.is-danger:hover {
 
 .utm_history-item-content {
   flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+}
+.utm_history-item-content-wrap {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  justify-content: center;
+  align-items: center;
+}
+.utm_history-item-content-wrap-2 {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  justify-content: flex-start;
 }
 
 .utm_history-item input[type="checkbox"] {
@@ -490,10 +514,9 @@ button.is-danger:hover {
   cursor: pointer;
 }
 
-.utm-params {
+.utm_params {
   display: flex;
   gap: 0.5rem;
-  margin: 0.5rem 0;
 }
 
 .utm-param {
@@ -504,7 +527,7 @@ button.is-danger:hover {
   color: #666;
 }
 
-.utm_history-item .meta-info {
+.utm_history-item .utm_meta-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -515,7 +538,7 @@ button.is-danger:hover {
   color: #2c3e50;
 }
 
-.utm_history-item .timestamp {
+.utm_history-item .utm_timestamp {
   font-size: 0.75rem;
   color: #6c757d;
   font-style: italic;
@@ -523,7 +546,7 @@ button.is-danger:hover {
   position: relative;
 }
 
-.utm_history-item .timestamp:hover::after {
+.utm_history-item .utm_timestamp:hover::after {
   content: attr(data-full-date);
   position: absolute;
   top: -30px;
@@ -538,7 +561,7 @@ button.is-danger:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.utm_history-item .timestamp:hover::before {
+.utm_history-item .utm_timestamp:hover::before {
   content: "";
   position: absolute;
   top: -8px;
@@ -555,10 +578,19 @@ button.is-danger:hover {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  max-width: 55ch;
+  max-width: 45ch;
 }
 
-.utm_history-item .actions {
+.utm_history-item-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  align-items: flex-end;
+  margin-top: 0.5rem;
+}
+
+.utm_history-item-actions-wrap {
   display: flex;
   gap: 0.5rem;
   justify-content: flex-end;
@@ -967,4 +999,8 @@ button[data-utm-action="delete"]:hover {
   justify-content: flex-end;
   gap: 0.5rem;
   margin-top: 1.5rem;
+}
+
+#utmForm {
+  display: none;
 }

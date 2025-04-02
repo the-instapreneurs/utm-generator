@@ -1237,7 +1237,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 titleElement.textContent = item.title || utmLanguageManager.translate('history.untitled');
             }
 
-            const timestampElement = historyItem.querySelector('.timestamp');
+            const timestampElement = historyItem.querySelector('.utm_timestamp');
             if (timestampElement) {
                 timestampElement.textContent = timeAgo;
                 timestampElement.setAttribute('data-full-date', fullDate);
@@ -1312,7 +1312,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return selectedFields.map(field => {
                 switch (field) {
                     case 'created_date':
-                        return formatFullDate(item.timestamp);
+                        return formatFullDate(item.utm_timestamp);
                     case 'utm_source':
                         return params.get('utm_source') || '';
                     case 'utm_medium':
