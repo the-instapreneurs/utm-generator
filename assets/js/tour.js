@@ -21,7 +21,7 @@ const tourSteps = [
         }
     },
     {
-        element: '[data-utm-format="https"]',
+        element: '.url-format-options',
         popover: {
             titleKey: 'tour.steps.urlFormat.title',
             descriptionKey: 'tour.steps.urlFormat.description',
@@ -111,7 +111,7 @@ const tourSteps = [
         }
     },
     {
-        element: '.history-section',
+        element: '[data-utm-container="history"]',
         popover: {
             titleKey: 'tour.steps.history.title',
             descriptionKey: 'tour.steps.history.description',
@@ -121,11 +121,31 @@ const tourSteps = [
         }
     },
     {
-        element: '.table-export-section',
+        element: '[data-utm-action="select-all"]',
         popover: {
-            titleKey: 'tour.steps.export.title',
-            descriptionKey: 'tour.steps.export.description',
-            position: 'top',
+            titleKey: 'tour.steps.selectAll.title',
+            descriptionKey: 'tour.steps.selectAll.description',
+            position: 'left',
+            showButtons: ['close', 'previous', 'next'],
+            closeBtnText: 'Close Tour'
+        }
+    },
+    {
+        element: '[data-utm-action="copy-table"]',
+        popover: {
+            titleKey: 'tour.steps.copyTable.title',
+            descriptionKey: 'tour.steps.copyTable.description',
+            position: 'left',
+            showButtons: ['close', 'previous', 'next'],
+            closeBtnText: 'Close Tour'
+        }
+    },
+    {
+        element: '[data-utm-action="create-sheet"]',
+        popover: {
+            titleKey: 'tour.steps.createSheet.title',
+            descriptionKey: 'tour.steps.createSheet.description',
+            position: 'left',
             showButtons: ['close', 'previous', 'next'],
             closeBtnText: 'Close Tour'
         }
@@ -248,216 +268,135 @@ function createTourInstance() {
         // Create a fresh instance using the driver() constructor
         driverObj = driverFunction({
             animate: true,                    // Whether to animate or not
-            overlayOpacity: 0.75,             // Background opacity (0 means only popovers and without overlay)
-            stagePadding: 10,                 // Distance of element from around the edges
-            allowClose: true,                 // Whether clicking on overlay should close or not
-            overlayClickNext: false,          // Whether clicking on overlay should move next
-            doneBtnText: window.utmLanguageManager?.translate('tour.buttons.done') || 'Done',              // Text on the final button
-            closeBtnText: window.utmLanguageManager?.translate('tour.buttons.close') || 'Close',            // Text on the close button
-            nextBtnText: window.utmLanguageManager?.translate('tour.buttons.next') || 'Next',              // Next button text
-            prevBtnText: window.utmLanguageManager?.translate('tour.buttons.previous') || 'Previous',          // Previous button text
-            showButtons: ['close', 'next', 'previous'], // Which buttons to show (adding close as first for visibility)
-            keyboardControl: true,            // Allow controlling through keyboard (escape to close, arrow keys to move)
-            scrollIntoViewOptions: { behavior: 'smooth', block: 'center' },
-            onHighlightStarted: (element) => {
-                console.log('Element highlight started', element);
+            showProgress: true,               // Show progress bar
+            showButtons: ['next', 'previous', 'close'], // Show all buttons
+            closeBtnText: 'Close Tour',       // Text for close button
+            nextBtnText: 'Next',              // Text for next button
+            prevBtnText: 'Previous',          // Text for previous button
+            doneBtnText: 'Done',              // Text for done button
+            steps: translatedSteps,           // Steps to show
+            allowClose: true,                 // Allow closing by clicking overlay
+            overlayClickNext: false,          // Don't move to next step when clicking overlay
+            stagePadding: 10,                 // Padding around highlighted element
+            stageRadius: 5,                   // Border radius of highlighted area
+            onReset: () => {
+                // Callback when tour is reset
+                console.log('Tour reset');
             },
-            onHighlighted: (element) => {
-                console.log('Element highlighted', element);
+            onNext: () => {
+                // Callback when next button is clicked
+                console.log('Next step');
             },
-            onDeselected: (element) => {
-                console.log('Element deselected', element);
+            onPrevious: () => {
+                // Callback when previous button is clicked
+                console.log('Previous step');
             },
-            onDestroyed: () => {
-                console.log('Tour destroyed/completed');
-                localStorage.setItem('tourCompleted', 'true');
-                showTourButton();
+            onClose: () => {
+                // Callback when close button is clicked
+                console.log('Close button clicked');
+                closeTour();
             },
             onDestroyStarted: () => {
-                console.log('Tour destruction started');
+                // Callback when tour is being destroyed
+                console.log('Tour being destroyed');
             },
-            onCloseClick: () => {
-                console.log('Close button clicked, destroying tour');
-                if (driverObj) {
-                    try {
-                        driverObj.destroy();
-                    } catch (e) {
-                        console.error('Error destroying tour on close:', e);
-                    }
-                }
+            onDestroyed: () => {
+                // Callback when tour is destroyed
+                console.log('Tour destroyed');
                 showTourButton();
             },
-            steps: translatedSteps,          // Use the translated steps
-            showProgress: true,               // Show progress bar
-            progressText: '{{current}} of {{total}}', // Progress text format
-            stagePadding: 10,                 // Padding around the highlighted element
-            stageRadius: 5                    // Border radius of the highlighted area
+            onHighlightStarted: (element) => {
+                // Callback when element is being highlighted
+                console.log('Highlighting element:', element);
+            },
+            onHighlighted: (element) => {
+                // Callback when element is highlighted
+                console.log('Element highlighted:', element);
+            },
+            onDeselected: (element) => {
+                // Callback when element is deselected
+                console.log('Element deselected:', element);
+            }
         });
 
         return driverObj;
     } catch (error) {
-        console.error('Error creating tour:', error);
+        console.error('Error creating tour instance:', error);
         return null;
     }
 }
 
-// Add an explicit function to close the tour manually
+// Function to close the tour
 function closeTour() {
-    console.log('Manually closing tour');
     if (driverObj) {
         try {
+            // Remove event listeners first
+            document.removeEventListener('keydown', handleEscapeKey);
+
+            // Destroy the tour instance
             driverObj.destroy();
             driverObj = null;
-            // Remove any event listeners
-            document.removeEventListener('keydown', handleEscapeKey);
+
             // Show the tour button
             showTourButton();
-            // Flag tour as completed in local storage
+
+            // Mark tour as completed
             localStorage.setItem('tourCompleted', 'true');
+
+            // Re-add the escape key listener for future tours
+            document.addEventListener('keydown', handleEscapeKey);
         } catch (error) {
-            console.warn('Error manually closing tour:', error);
+            console.error('Error closing tour:', error);
         }
     }
 }
 
-// Helper to show tour button and hide close button
+// Function to show the tour button
 function showTourButton() {
     const tourButton = document.getElementById('tourButton');
-    const tourCloseButton = document.getElementById('tourCloseButton');
-
     if (tourButton) {
         tourButton.classList.remove('hidden');
     }
-
-    if (tourCloseButton) {
-        tourCloseButton.classList.add('hidden');
-    }
 }
 
-// Helper to hide tour button and show close button
-function showCloseButton() {
-    const tourButton = document.getElementById('tourButton');
-    const tourCloseButton = document.getElementById('tourCloseButton');
+// Function to start the tour
+function startTour() {
+    // Hide the tutorial modal
+    const tutorialModal = document.getElementById('tutorial-modal');
+    if (tutorialModal) {
+        tutorialModal.classList.add('hidden');
+    }
 
+    // Hide the tour button
+    const tourButton = document.getElementById('tourButton');
     if (tourButton) {
         tourButton.classList.add('hidden');
     }
 
-    if (tourCloseButton) {
-        tourCloseButton.classList.remove('hidden');
-    }
-}
-
-// Start the tour
-function startTour() {
-    console.log('Starting tour...');
-
-    // If we have a previous instance, destroy it
+    // Create and start the tour
+    driverObj = createTourInstance();
     if (driverObj) {
         try {
-            driverObj.destroy();
-            driverObj = null;
-            // Remove any existing event listeners
-            document.removeEventListener('keydown', handleEscapeKey);
+            driverObj.drive();
         } catch (error) {
-            console.warn('Error destroying previous tour:', error);
+            console.error('Error starting tour:', error);
         }
     }
-
-    // Create a new tour instance
-    driverObj = createTourInstance();
-
-    if (!driverObj) {
-        console.error('Failed to create tour instance');
-        // Try to load Driver.js and retry
-        loadDriverJS(() => {
-            driverObj = createTourInstance();
-            if (driverObj) {
-                startDrive();
-            }
-        });
-        return;
-    }
-
-    // Show the close button and hide the tour button
-    showCloseButton();
-
-    startDrive();
-
-    // Add a keyboard event listener for Escape key
-    document.addEventListener('keydown', handleEscapeKey);
 }
 
-// Handle Escape key press to close tour
+// Function to handle escape key
 function handleEscapeKey(event) {
     if (event.key === 'Escape' && driverObj) {
-        console.log('Escape key pressed, closing tour');
-        try {
-            driverObj.destroy();
-            driverObj = null;
-        } catch (error) {
-            console.warn('Error destroying tour on escape key:', error);
-        }
-        // Remove the event listener when tour is closed
-        document.removeEventListener('keydown', handleEscapeKey);
+        closeTour();
     }
 }
 
-// Helper function to start the actual tour
+// Function to start the drive
 function startDrive() {
-    try {
-        // Make sure the tour button is visible
-        showTourButton();
-
-        // Start the tour (per documentation)
-        console.log('Driving the tour...');
-        driverObj.drive();
-    } catch (error) {
-        console.error('Error starting tour:', error);
-        // Try a simpler approach as fallback
-        try {
-            console.log('Attempting fallback highlight approach...');
-            const firstStep = tourSteps[0];
-            driverObj.highlight({
-                element: firstStep.element,
-                popover: firstStep.popover
-            });
-        } catch (fallbackError) {
-            console.error('All tour methods failed:', fallbackError);
-        }
-    }
-}
-
-// Load Driver.js dynamically if needed
-function loadDriverJS(callback) {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.js.iife.js';
-    script.async = true;
-    script.onload = function () {
-        console.log('Driver.js loaded dynamically');
-        if (callback && typeof callback === 'function') {
-            callback();
-        }
-    };
-    document.head.appendChild(script);
-
-    // Also load the CSS
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.css';
-    document.head.appendChild(link);
-}
-
-// Check if tour has been completed
-function checkTourStatus() {
-    const tourCompleted = localStorage.getItem('tourCompleted');
-
-    // Always make sure the tour button is visible for future access
-    showTourButton();
-
-    // Only show the tutorial modal on first visit
-    if (!tourCompleted) {
-        // Show tutorial modal first
+    // Check if tour has been completed before
+    const hasSeenTour = localStorage.getItem('tourCompleted');
+    if (!hasSeenTour) {
+        // Show the tutorial modal
         const tutorialModal = document.getElementById('tutorial-modal');
         if (tutorialModal) {
             tutorialModal.classList.remove('hidden');
@@ -465,123 +404,93 @@ function checkTourStatus() {
     }
 }
 
-// Event listeners
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOMContentLoaded: Setting up tour functionality');
-
-    // Set up language change listener
-    setupLanguageChangeListener();
-
-    // Check if this is the first visit
-    checkTourStatus();
-
-    // Add event listener for the tour button
-    const tourButton = document.getElementById('tourButton');
-    if (tourButton) {
-        tourButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            startTour();
-        });
-        console.log('Tour button event listener attached');
-    } else {
-        console.warn('Tour button not found in the DOM');
-    }
-
-    // Add event listener for the tour close button
-    const tourCloseButton = document.getElementById('tourCloseButton');
-    if (tourCloseButton) {
-        tourCloseButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            closeTour();
-        });
-        console.log('Tour close button event listener attached');
-    } else {
-        console.warn('Tour close button not found in the DOM');
-    }
-
-    // Add event listeners for tutorial modal buttons
-    const startTourBtn = document.getElementById('startTour');
-    if (startTourBtn) {
-        startTourBtn.addEventListener('click', () => {
-            const tutorialModal = document.getElementById('tutorial-modal');
-            if (tutorialModal) {
-                tutorialModal.classList.add('hidden');
-            }
-            startTour();
-        });
-        console.log('Start tour button event listener attached');
-    } else {
-        console.warn('Start tour button not found in the DOM');
-    }
-
-    const declineTourBtn = document.getElementById('declineTour');
-    if (declineTourBtn) {
-        declineTourBtn.addEventListener('click', () => {
-            const tutorialModal = document.getElementById('tutorial-modal');
-            if (tutorialModal) {
-                tutorialModal.classList.add('hidden');
-            }
-            // Mark as completed so it doesn't show again
-            localStorage.setItem('tourCompleted', 'true');
-        });
-        console.log('Decline tour button event listener attached');
-    } else {
-        console.warn('Decline tour button not found in the DOM');
-    }
-
-    // If user arrives with no tour completion status, show the tutorial modal
-    if (!localStorage.getItem('tourCompleted')) {
-        console.log('First visit detected, showing tutorial modal');
-    }
-
-    // Update tutorial modal text with translations if language manager is available
-    updateTutorialModalTranslations();
-});
-
-// Function to update the tutorial modal text with translations
-function updateTutorialModalTranslations() {
-    if (typeof window.utmLanguageManager === 'undefined') {
+// Function to load Driver.js
+function loadDriverJS(callback) {
+    // Check if Driver.js is already loaded
+    if (typeof window.driver !== 'undefined') {
+        console.log('Driver.js already loaded');
+        if (callback) callback();
         return;
     }
 
-    // Get elements
-    const tutorialModal = document.getElementById('tutorial-modal');
-    if (!tutorialModal) return;
+    // Load Driver.js from CDN
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.js.iife.js';
+    script.onload = function () {
+        console.log('Driver.js loaded successfully');
+        if (callback) callback();
+    };
+    script.onerror = function () {
+        console.error('Error loading Driver.js');
+    };
+    document.head.appendChild(script);
+}
 
-    const title = tutorialModal.querySelector('h3');
-    const description = tutorialModal.querySelector('p');
-    const startBtn = document.getElementById('startTour');
-    const declineBtn = document.getElementById('declineTour');
+// Function to check tour status and initialize
+function checkTourStatus() {
+    // Load Driver.js if not already loaded
+    loadDriverJS(() => {
+        // Set up event listeners
+        document.addEventListener('keydown', handleEscapeKey);
 
-    // Update texts if elements exist
-    if (title) {
-        title.textContent = window.utmLanguageManager.translate('tour.tutorial.title');
-    }
+        // Set up tour button click handler
+        const tourButton = document.getElementById('tourButton');
+        if (tourButton) {
+            tourButton.addEventListener('click', startTour);
+        }
 
-    if (description) {
-        description.textContent = window.utmLanguageManager.translate('tour.tutorial.description');
-    }
+        // Set up tutorial modal buttons
+        const startTourButton = document.getElementById('startTour');
+        const declineTourButton = document.getElementById('declineTour');
 
-    if (startBtn) {
-        startBtn.textContent = window.utmLanguageManager.translate('tour.tutorial.startTour');
-    }
+        if (startTourButton) {
+            startTourButton.addEventListener('click', startTour);
+        }
 
-    if (declineBtn) {
-        declineBtn.textContent = window.utmLanguageManager.translate('tour.tutorial.declineTour');
+        if (declineTourButton) {
+            declineTourButton.addEventListener('click', () => {
+                const tutorialModal = document.getElementById('tutorial-modal');
+                if (tutorialModal) {
+                    tutorialModal.classList.add('hidden');
+                }
+                // Mark tour as completed even if declined
+                localStorage.setItem('tourCompleted', 'true');
+            });
+        }
+
+        // Set up language change listener
+        setupLanguageChangeListener();
+
+        // Start the drive
+        startDrive();
+    });
+}
+
+// Function to update tutorial modal translations
+function updateTutorialModalTranslations() {
+    if (typeof window.utmLanguageManager === 'undefined') return;
+
+    const elements = {
+        'tutorial-modal h3': 'tour.modal.title',
+        'tutorial-modal p': 'tour.modal.description',
+        '#startTour': 'tour.modal.startTour',
+        '#declineTour': 'tour.modal.skipTour'
+    };
+
+    for (const [selector, key] of Object.entries(elements)) {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.textContent = window.utmLanguageManager.translate(key);
+        }
     }
 }
 
-// Add this function to update translations when language changes
+// Function to update all tour translations
 function updateAllTourTranslations() {
-    // Update the tutorial modal
     updateTutorialModalTranslations();
-
-    // Update the tour steps if we have an active instance
     translateTourSteps();
 }
 
-// Make functions available globally
-window.updateTourTranslations = translateTourSteps;
-window.updateTutorialModalTranslations = updateTutorialModalTranslations;
-window.setupLanguageChangeListener = setupLanguageChangeListener;
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', checkTourStatus);
 window.updateAllTourTranslations = updateAllTourTranslations; 
