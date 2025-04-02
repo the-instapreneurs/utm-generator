@@ -1181,43 +1181,104 @@ document.addEventListener('DOMContentLoaded', function () {
         const history = getHistory();
         debugLog('Rendering history', { itemCount: history.length });
 
+        // Clear existing items except templates
+        const templates = historyList.querySelectorAll('[data-template]');
+        const emptyState = historyList.querySelector('.history-item-empty');
+        historyList.innerHTML = '';
+        templates.forEach(template => historyList.appendChild(template));
+        if (emptyState) historyList.appendChild(emptyState);
+
         if (history.length === 0) {
-            historyList.innerHTML =
-                `<div class="history-item-empty">${utmLanguageManager.translate('general.noHistoryFound')}</div>`;
+            const emptyStateElement = historyList.querySelector('.history-item-empty');
+            if (emptyStateElement) {
+                emptyStateElement.style.display = 'block';
+                emptyStateElement.textContent = utmLanguageManager.translate('general.noHistoryFound');
+            }
             return;
         }
 
-        historyList.innerHTML = history.map((item, index) => {
+        // Hide empty state
+        const emptyStateElement = historyList.querySelector('.history-item-empty');
+        if (emptyStateElement) {
+            emptyStateElement.style.display = 'none';
+        }
+
+        // Get the template
+        const template = historyList.querySelector('[data-template="history-item"]');
+        if (!template) return;
+
+        // Create history items
+        history.forEach((item, index) => {
             const timeAgo = formatTimeAgo(item.timestamp);
             const fullDate = formatFullDate(item.timestamp);
             const urlObj = new URL(item.url);
             const params = new URLSearchParams(urlObj.search);
 
-            return `
-                <div class="history-item" data-url="${encodeURIComponent(item.url)}">
-                    <div class="history-item-checkbox">
-                        <input type="checkbox" id="history-item-${index}" class="history-select" data-index="${index}">
-                    </div>
-                    <div class="history-item-content">
-                      <div class="meta-info">
-                          <div class="title">${item.title || utmLanguageManager.translate('history.untitled')}</div>
-                            <div class="timestamp" data-full-date="${fullDate}">${timeAgo}</div>
-    </div>
-                        <div class="utm-params">
-                            <span class="utm-param source">${params.get('utm_source') || ''}</span>
-                            <span class="utm-param medium">${params.get('utm_medium') || ''}</span>
-                            ${params.get('utm_campaign') ? `<span class="utm-param campaign">${params.get('utm_campaign')}</span>` : ''}
-    </div>
-                      <div class="url">${item.url}</div>
-                      <div class="actions">
-                          <button data-utm-action="apply" data-url="${encodeURIComponent(item.url)}">${utmLanguageManager.translate('history.apply')}</button>
-                          <button data-utm-action="copy" data-url="${encodeURIComponent(item.url)}">${utmLanguageManager.translate('general.copy')}</button>
-                          <button data-utm-action="delete" class="main-button is-danger" data-url="${encodeURIComponent(item.url)}">${utmLanguageManager.translate('history.delete')}</button>
-                        </div>
-    </div>
-    </div>
-              `;
-        }).join('');
+            // Clone the template
+            const historyItem = template.cloneNode(true);
+            historyItem.style.display = 'block';
+            historyItem.setAttribute('data-url', encodeURIComponent(item.url));
+
+            // Update checkbox
+            const checkbox = historyItem.querySelector('.history-select');
+            if (checkbox) {
+                checkbox.id = `history-item-${index}`;
+                checkbox.setAttribute('data-index', index);
+            }
+
+            // Update meta info
+            const urlElement = historyItem.querySelector('.url-');
+            if (urlElement) {
+                urlElement.textContent = item.url;
+            }
+
+            const titleElement = historyItem.querySelector('.title--');
+            if (titleElement) {
+                titleElement.textContent = item.title || utmLanguageManager.translate('history.untitled');
+            }
+
+            const timestampElement = historyItem.querySelector('.timestamp');
+            if (timestampElement) {
+                timestampElement.textContent = timeAgo;
+                timestampElement.setAttribute('data-full-date', fullDate);
+            }
+
+            // Update UTM params
+            const sourceElement = historyItem.querySelector('.utm-param--.source--');
+            if (sourceElement) {
+                sourceElement.textContent = params.get('utm_source') || '';
+            }
+
+            const mediumElement = historyItem.querySelector('.utm-param--.medium--');
+            if (mediumElement) {
+                mediumElement.textContent = params.get('utm_medium') || '';
+            }
+
+            const campaignElement = historyItem.querySelector('.utm-param-.campaign-');
+            if (campaignElement) {
+                campaignElement.textContent = params.get('utm_campaign') || '';
+                campaignElement.style.display = params.get('utm_campaign') ? 'inline-block' : 'none';
+            }
+
+            // Update action buttons
+            const applyButton = historyItem.querySelector('[data-utm-action="apply"]');
+            if (applyButton) {
+                applyButton.setAttribute('data-url', encodeURIComponent(item.url));
+            }
+
+            const copyButton = historyItem.querySelector('[data-utm-action="copy"]');
+            if (copyButton) {
+                copyButton.setAttribute('data-url', encodeURIComponent(item.url));
+            }
+
+            const deleteButton = historyItem.querySelector('[data-utm-action="delete"]');
+            if (deleteButton) {
+                deleteButton.setAttribute('data-url', encodeURIComponent(item.url));
+            }
+
+            // Add to history list
+            historyList.appendChild(historyItem);
+        });
     }
 
     // Function to get selected history items
@@ -1409,6 +1470,55 @@ document.addEventListener('DOMContentLoaded', function () {
         return encodeURIComponent(value.toLowerCase().replace(/\s+/g, '_'));
     }
 
+    // Function to track UTM generation in Mixpanel
+    function trackUtmGeneration(formValues, generatedUrl) {
+        if (window.mixpanel && typeof window.mixpanel.track === 'function') {
+            window.mixpanel.track("UTM Generator Used", {
+                websiteUrl: formValues.websiteUrl,
+                utm_source: formValues.campaignSource || "",
+                utm_medium: formValues.campaignMedium || "",
+                utm_campaign: formValues.campaignName || "",
+                utm_id: formValues.campaignId || "",
+                utm_term: formValues.campaignTerm || "",
+                utm_content: formValues.campaignContent || "",
+                generatedUrl: generatedUrl
+            });
+        }
+    }
+
+    // Function to track UTM parameter addition in Mixpanel
+    function trackUtmParameter(formValues, generatedUrl, parameterName, parameterValue) {
+        if (window.mixpanel && typeof window.mixpanel.track === 'function') {
+            window.mixpanel.track(`UTM Generator Used - ${parameterName} Added`, {
+                websiteUrl: formValues.websiteUrl,
+                generatedUrl: generatedUrl,
+                parameterValue: parameterValue
+            });
+        }
+    }
+
+    // Function to track URL copy action in Mixpanel
+    function trackUrlCopy(formValues, generatedUrl) {
+        if (window.mixpanel && typeof window.mixpanel.track === 'function') {
+            // Extract UTM parameters from the generated URL
+            const urlParams = new URLSearchParams(new URL(generatedUrl).search);
+            const utmParams = {
+                utm_source: urlParams.get('utm_source') || '',
+                utm_medium: urlParams.get('utm_medium') || '',
+                utm_campaign: urlParams.get('utm_campaign') || '',
+                utm_id: urlParams.get('utm_id') || '',
+                utm_term: urlParams.get('utm_term') || '',
+                utm_content: urlParams.get('utm_content') || ''
+            };
+
+            window.mixpanel.track("UTM Generator Used - URL Copied", {
+                websiteUrl: formValues.websiteUrl,
+                generatedUrl: generatedUrl,
+                utmParameters: utmParams
+            });
+        }
+    }
+
     // Function to generate UTM URL
     function generateUTMUrl() {
         debugLog('Generating UTM URL');
@@ -1479,31 +1589,37 @@ document.addEventListener('DOMContentLoaded', function () {
         // Source (required)
         if (inputs.campaignSource) {
             params.push(`utm_source=${encodeParameter(inputs.campaignSource)}`);
+            trackUtmParameter(inputs, utmUrl, 'Source', inputs.campaignSource);
         }
 
         // Medium (required)
         if (inputs.campaignMedium) {
             params.push(`utm_medium=${encodeParameter(inputs.campaignMedium)}`);
+            trackUtmParameter(inputs, utmUrl, 'Medium', inputs.campaignMedium);
         }
 
         // Campaign Name (optional)
         if (inputs.campaignName) {
             params.push(`utm_campaign=${encodeParameter(inputs.campaignName)}`);
+            trackUtmParameter(inputs, utmUrl, 'Campaign', inputs.campaignName);
         }
 
         // Campaign ID (optional)
         if (inputs.campaignId) {
             params.push(`utm_id=${encodeParameter(inputs.campaignId)}`);
+            trackUtmParameter(inputs, utmUrl, 'Campaign ID', inputs.campaignId);
         }
 
         // Term (optional)
         if (inputs.campaignTerm) {
             params.push(`utm_term=${encodeParameter(inputs.campaignTerm)}`);
+            trackUtmParameter(inputs, utmUrl, 'Term', inputs.campaignTerm);
         }
 
         // Content (optional)
         if (inputs.campaignContent) {
             params.push(`utm_content=${encodeParameter(inputs.campaignContent)}`);
+            trackUtmParameter(inputs, utmUrl, 'Content', inputs.campaignContent);
         }
 
         // If there are parameters, build the URL
@@ -1517,6 +1633,9 @@ document.addEventListener('DOMContentLoaded', function () {
         debugLog('Generated URL', utmUrl);
         updateOutput(utmUrl);
         updateProgress();
+
+        // Track UTM generation in Mixpanel
+        trackUtmGeneration(inputs, utmUrl);
     }
 
     // Function to show URL format options and register event listeners
@@ -1633,23 +1752,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     const output = document.querySelector(UTM_CONFIG.form.output);
                     if (output && output.value) {
-                        // Validate required fields before copying
-                        const validation = validateRequiredFields();
-                        if (!validation.valid) {
-                            debugLog('Cannot copy - missing required fields', validation.missingFields);
-                            const errorElement = document.querySelector(UTM_CONFIG.form.error);
-                            if (errorElement) {
-                                errorElement.textContent = utmLanguageManager.translate(
-                                    'errors.requiredFieldsMissing');
-                                setTimeout(() => {
-                                    errorElement.textContent = '';
-                                }, 3000);
-                            }
-                            return;
-                        }
-
-                        e.preventDefault(); // Prevent any form submission that might be happening
-
                         navigator.clipboard.writeText(output.value)
                             .then(() => {
                                 debugLog('Current URL copied', output.value);
@@ -1658,14 +1760,19 @@ document.addEventListener('DOMContentLoaded', function () {
                                     document.querySelector(UTM_CONFIG.form.inputs.websiteUrl).value;
                                 if (output.value) {
                                     addToHistory(output.value, title);
-                                    debugLog('Form state after copy - keeping inputs', {
-                                        websiteUrl: document.querySelector(UTM_CONFIG.form.inputs
-                                            .websiteUrl).value,
-                                        campaignSource: document.querySelector(UTM_CONFIG.form.inputs
-                                            .campaignSource).value,
-                                        campaignMedium: document.querySelector(UTM_CONFIG.form.inputs
-                                            .campaignMedium).value
+
+                                    // Get form values for tracking
+                                    const inputs = {};
+                                    Object.keys(UTM_CONFIG.form.inputs).forEach(key => {
+                                        const inputSelector = UTM_CONFIG.form.inputs[key];
+                                        const inputElement = document.querySelector(inputSelector);
+                                        if (inputElement) {
+                                            inputs[key] = inputElement.value.trim();
+                                        }
                                     });
+
+                                    // Track URL copy action
+                                    trackUrlCopy(inputs, output.value);
                                 }
                                 action.textContent = utmLanguageManager.translate('general.copied');
                                 setTimeout(() => {
@@ -1675,15 +1782,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             .catch(err => {
                                 debugLog('Error copying URL', err);
                             });
-                    } else {
-                        debugLog('Nothing to copy - output is empty');
-                        const errorElement = document.querySelector(UTM_CONFIG.form.error);
-                        if (errorElement) {
-                            errorElement.textContent = utmLanguageManager.translate('errors.generateFirst');
-                            setTimeout(() => {
-                                errorElement.textContent = '';
-                            }, 3000);
-                        }
                     }
                 }
                 break;
