@@ -73,7 +73,7 @@ h1 {
   flex: 1;
 }
 
-.paste-button {
+/* .paste-button {
   padding: 0.75rem 1rem;
   background-color: #f8f9fa;
   border: 1px solid #ddd;
@@ -92,7 +92,7 @@ h1 {
 
 .paste-button:active {
   background-color: #dee2e6;
-}
+} */
 
 label {
   display: flex;
@@ -172,10 +172,6 @@ input[type="url"]:focus {
   border: 1px solid #ced4da;
 }
 
-.secondary-button:hover {
-  background-color: #dee2e6;
-}
-
 /* Buttons */
 button,
 .main-button {
@@ -199,19 +195,6 @@ button,
   transition: border 0.25s cubic-bezier(0.215, 0.61, 0.355, 1),
     background-color 0.25s cubic-bezier(0.215, 0.61, 0.355, 1),
     background-image 0.25s cubic-bezier(0.215, 0.61, 0.355, 1);
-}
-
-button:hover {
-  background-color: #ffe43395;
-}
-
-.main-button.is-secondary {
-  background-color: #000;
-  color: #fff;
-}
-
-.main-button.is-secondary:hover {
-  background-color: #00000095;
 }
 
 /* button.is-danger {
@@ -488,6 +471,7 @@ button.is-danger:hover {
   justify-content: space-between;
   align-items: center;
 }
+
 .utm_history-item-content-wrap {
   display: flex;
   flex-direction: row;
@@ -495,6 +479,7 @@ button.is-danger:hover {
   justify-content: center;
   align-items: center;
 }
+
 .utm_history-item-content-wrap-2 {
   display: flex;
   flex-direction: column;
@@ -1008,6 +993,7 @@ button[data-utm-action="delete"] {
   gap: 0.5rem;
   margin-top: 1.5rem;
 }
+
 /* 
 #utmForm {
   display: none;
